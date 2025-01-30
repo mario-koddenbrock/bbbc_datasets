@@ -1,0 +1,7 @@
+requests~=2.32.3
+opencv-python~=4.11.0.86
+matplotlib~=3.10.0
+numpy~=2.2.2
+tifffile~=2025.1.10
+tqdm~=4.66.5
+torch~=2.6.0
