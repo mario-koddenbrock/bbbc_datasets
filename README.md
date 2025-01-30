@@ -5,11 +5,13 @@
 ## 📌 Overview
 
 This package provides a **PyTorch-compatible dataset manager** for **Broad Bioimage Benchmark Collection (BBBC) datasets
-**. It allows users to:
+**.
+
+It allows users to:
 
 - **Download and manage BBBC datasets automatically** 📥
 - **Load datasets as PyTorch `Dataset` objects** 📊
-- **Handle 2D & 3D images properly (middle Z-slice for 3D)** 🔬
+- **Handle 2D & 3D images properly** 🔬
 - **Support image augmentations via `torchvision.transforms`** 🎨
 - **List and select datasets dynamically** ⚡
 
