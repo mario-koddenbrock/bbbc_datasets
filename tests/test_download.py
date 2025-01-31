@@ -24,7 +24,7 @@ class TestDatasetURLs(unittest.TestCase):
 
                 urls = []
                 urls.extend(dataset.dataset_info.get("image_paths", []))
-                urls.append(dataset.dataset_info.get("segmentation_path", ""))
+                urls.append(dataset.dataset_info.get("label_path", ""))
                 urls.extend(dataset.dataset_info.get("metadata_paths", []))
 
                 for url in urls:

@@ -26,7 +26,7 @@ class BBBC029(BaseBBBCDataset):
     def __init__(self):
         dataset_info = {
             "image_paths": [f"{self.BASE_URL}/images.zip"],
-            "segmentation_path": f"{self.BASE_URL}/ground_truth.zip",
+            "label_path": f"{self.BASE_URL}/ground_truth.zip",
             "metadata_paths": [],
             "local_path": "data/BBBC029",
         }

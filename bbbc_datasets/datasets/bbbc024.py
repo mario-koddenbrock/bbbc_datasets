@@ -44,17 +44,17 @@ class BBBC024(BaseBBBCDataset):
                 f"Invalid SNR level: {snr}. Choose from {list(self.SNR_LEVELS.keys())}"
             )
 
-        prob_str = self.CLUSTERING_PROBABILITIES[clustering_probability]
-        snr_str = self.SNR_LEVELS[snr]
+        self.prob_str = self.CLUSTERING_PROBABILITIES[clustering_probability]
+        self.snr_str = self.SNR_LEVELS[snr]
 
         dataset_info = {
             "image_paths": [
-                f"{self.BASE_URL}/BBBC024_v1_{prob_str}_{snr_str}_images.zip",
-                f"{self.BASE_URL}/BBBC024_v1_{prob_str}_{snr_str}_images_TIFF.zip",
+                f"{self.BASE_URL}/BBBC024_v1_{self.prob_str}_{self.snr_str}_images.zip",
+                f"{self.BASE_URL}/BBBC024_v1_{self.prob_str}_{self.snr_str}_images_TIFF.zip",
             ],
-            "segmentation_path": f"{self.BASE_URL}/BBBC024_v1_{prob_str}_{snr_str}_foreground.zip",
+            "label_path": f"{self.BASE_URL}/BBBC024_v1_{self.prob_str}_{self.snr_str}_foreground.zip",
             "metadata_paths": [],
-            "local_path": f"data/BBBC024/{prob_str}_{snr_str}",
+            "local_path": f"data/BBBC024/{self.prob_str}_{self.snr_str}",
         }
 
-        super().__init__(f"BBBC024_{prob_str}_{snr_str}", dataset_info)
+        super().__init__(f"BBBC024_{self.prob_str}_{self.snr_str}", dataset_info)

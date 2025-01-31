@@ -47,7 +47,7 @@ class BBBC038(BaseBBBCDataset):
 
         dataset_info = {
             "image_paths": [f"{self.BASE_URL}/{dataset_version}.zip"],
-            "segmentation_path": (
+            "label_path": (
                 f"{self.BASE_URL}/stage1_train_labels.csv"
                 if dataset_version == "stage1_train"
                 else None

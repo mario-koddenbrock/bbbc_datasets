@@ -43,7 +43,7 @@ class BBBC027(BaseBBBCDataset):
                 f"{self.BASE_URL}/BBBC027_{snr_str}_images_part2.zip",
                 f"{self.BASE_URL}/BBBC027_{snr_str}_images_part3.zip",
             ],
-            "segmentation_path": [
+            "label_path": [
                 f"{self.BASE_URL}/BBBC027_{snr_str}_foreground_part1.zip",
                 f"{self.BASE_URL}/BBBC027_{snr_str}_foreground_part2.zip",
                 f"{self.BASE_URL}/BBBC027_{snr_str}_foreground_part3.zip",
@@ -53,3 +53,10 @@ class BBBC027(BaseBBBCDataset):
         }
 
         super().__init__(f"BBBC027_{snr_str}", dataset_info)
+        #
+        # self.IMAGE_SUBDIR = []
+        # self.SEGMENTATION_SUBDIR = []
+        #
+        # for k in range(1, 4):
+        #     self.IMAGE_SUBDIR.append(f"BBBC027_{snr_str}_images_part{k}")
+        #     self.SEGMENTATION_SUBDIR.append(f"BBBC027_{snr_str}_foreground_part{k}")

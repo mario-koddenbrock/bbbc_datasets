@@ -39,7 +39,7 @@ class BBBC034(BaseBBBCDataset):
     def __init__(self):
         dataset_info = {
             "image_paths": [f"{self.BASE_URL}/BBBC034_v1_dataset.zip"],
-            "segmentation_path": None,  # No direct segmentation images, only CSV metadata.
+            "label_path": None,  # No direct segmentation images, only CSV metadata.
             "metadata_paths": [f"{self.BASE_URL}/BBBC034DatasetGroundTruth.csv"],
             "local_path": "data/BBBC034",
         }

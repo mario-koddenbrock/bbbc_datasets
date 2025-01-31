@@ -27,7 +27,7 @@ class BBBC003(BaseBBBCDataset):
             "image_paths": [
                 "https://data.broadinstitute.org/bbbc/BBBC003/BBBC003_v1_images.zip"
             ],
-            "segmentation_path": "https://data.broadinstitute.org/bbbc/BBBC003/BBBC003_v1_foreground.zip",
+            "label_path": "https://data.broadinstitute.org/bbbc/BBBC003/BBBC003_v1_foreground.zip",
             "metadata_paths": [
                 "https://data.broadinstitute.org/bbbc/BBBC003/BBBC003_v1_counts.txt"
             ],

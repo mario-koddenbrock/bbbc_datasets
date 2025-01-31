@@ -1,3 +1,5 @@
+import os.path
+
 from bbbc_datasets.datasets.base_dataset import BaseBBBCDataset
 
 
@@ -28,7 +30,7 @@ class BBBC046(BaseBBBCDataset):
 
     BASE_URL = "https://data.broadinstitute.org/bbbc/BBBC046"
 
-    DATASETS = {
+    PHENOTYPES = {
         "OE-ID350": "OE-ID350.zip",
         "OE-ID351": "OE-ID351.zip",
         "OE-ID352": "OE-ID352.zip",
@@ -40,22 +42,59 @@ class BBBC046(BaseBBBCDataset):
         "WT-ID552": "WT-ID552.zip",
     }
 
-    def __init__(self, dataset_name="WT-ID550"):
+    FLOURESCENCE_LEVELS = {
+        "0.25": "factor-0.25",
+        "0.5": "factor-0.5",
+        "1.0": "factor-1.0",
+        "2.0": "factor-2.0",
+        "4.0": "factor-4.0",
+    }
+
+    ANISOTROPY_RATIOS = {
+        1: "AR-1",
+        2: "AR-2",
+        4: "AR-4",
+        8: "AR-8",
+    }
+
+    def __init__(
+        self, phenotype="WT-ID550", fluorescence_level="0.25", anisotropy_ratio=1
+    ):
         """
         Initialize the dataset for a specific phenotype and sequence ID.
 
-        :param dataset_name: The dataset variation to download (WT-ID550, OE-ID350, PD-ID450, etc.).
+        :param phenotypes: The dataset variation to download (WT-ID550, OE-ID350, PD-ID450, etc.).
         """
-        if dataset_name not in self.DATASETS:
+        if phenotype not in self.PHENOTYPES:
             raise ValueError(
-                f"Invalid dataset name: {dataset_name}. Choose from {list(self.DATASETS.keys())}"
+                f"Invalid dataset name: {phenotype}. Choose from {list(self.PHENOTYPES.keys())}"
             )
 
         dataset_info = {
-            "image_paths": [f"{self.BASE_URL}/{self.DATASETS[dataset_name]}"],
-            "segmentation_path": None,  # Ground truth masks & metadata are inherently generated.
+            "image_paths": [f"{self.BASE_URL}/{self.PHENOTYPES[phenotype]}"],
+            "label_path": None,  # Ground truth masks & metadata are inherently generated.
             "metadata_paths": [],
-            "local_path": f"data/BBBC046/{dataset_name}",
+            "local_path": f"data/BBBC046/{phenotype}",
         }
 
-        super().__init__(f"BBBC046_{dataset_name}", dataset_info)
+        self.IMAGE_SUBDIR = "all"
+
+        super().__init__(f"BBBC046_{phenotype}", dataset_info)
+
+        self.IMAGE_SUBDIR = os.path.join(
+            "all",
+            f"{phenotype}-{self.ANISOTROPY_RATIOS[anisotropy_ratio]}",
+            self.FLOURESCENCE_LEVELS[fluorescence_level],
+        )
+
+        self.LABEL_SUBDIR = os.path.join(
+            "all",
+            f"{phenotype}-{self.ANISOTROPY_RATIOS[anisotropy_ratio]}",
+        )
+
+    def get_label_paths(self):
+        """
+        Returns the label mask file path (if available).
+        """
+        images = self._get_paths(self.LABEL_SUBDIR, recursive=False)
+        return images

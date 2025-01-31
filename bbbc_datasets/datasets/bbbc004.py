@@ -42,13 +42,13 @@ class BBBC004(BaseBBBCDataset):
                 f"Invalid overlap probability: {overlap_probability}. Choose from {list(self.OVERLAP_PROBABILITIES.keys())}"
             )
 
-        prob_str = self.OVERLAP_PROBABILITIES[overlap_probability]
+        self.prob_str = self.OVERLAP_PROBABILITIES[overlap_probability]
 
         dataset_info = {
-            "image_paths": [f"{self.BASE_URL}/BBBC004_v1_{prob_str}_images.zip"],
-            "segmentation_path": f"{self.BASE_URL}/BBBC004_v1_{prob_str}_foreground.zip",
+            "image_paths": [f"{self.BASE_URL}/BBBC004_v1_{self.prob_str}_images.zip"],
+            "label_path": f"{self.BASE_URL}/BBBC004_v1_{self.prob_str}_foreground.zip",
             "metadata_paths": [],
-            "local_path": f"data/BBBC004/{prob_str}",
+            "local_path": f"data/BBBC004/{self.prob_str}",
         }
 
-        super().__init__(f"BBBC004_{prob_str}", dataset_info)
+        super().__init__(f"BBBC004_{self.prob_str}", dataset_info)

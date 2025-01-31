@@ -15,7 +15,7 @@ class TestDatasetLoading(unittest.TestCase):
 
                 # Check that images, masks, and metadata exist
                 image_paths = dataset.get_image_paths()
-                segmentation_path = dataset.get_segmentation_path()
+                label_path = dataset.get_label_paths()
                 metadata_paths = dataset.get_metadata_paths()
 
                 # Ensure at least some data exists
@@ -25,9 +25,9 @@ class TestDatasetLoading(unittest.TestCase):
                 )
 
                 # If the dataset has segmentation, ensure it exists
-                if segmentation_path:
+                if label_path:
                     self.assertTrue(
-                        os.path.exists(segmentation_path),
+                        os.path.exists(label_path),
                         msg=f"Segmentation file missing for {dataset_cls.__name__}",
                     )
 

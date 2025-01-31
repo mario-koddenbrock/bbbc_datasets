@@ -35,11 +35,12 @@ class BBBC006(BaseBBBCDataset):
         if not (0 <= z_plane <= 32):
             raise ValueError(f"Invalid z-plane: {z_plane}. Choose between 0 and 32.")
 
+        self.z_plane = z_plane
         dataset_info = {
             "image_paths": [f"{self.BASE_URL}/BBBC006_v1_images_z_{z_plane:02}.zip"],
-            "segmentation_path": f"{self.BASE_URL}/BBBC006_v1_labels.zip",
+            "label_path": f"{self.BASE_URL}/BBBC006_v1_labels.zip",
             "metadata_paths": [
-                f"{self.BASE_URL}/BBBC006_v1_counts.zip",
+                f"{self.BASE_URL}/BBBC006_v1_counts.csv",
                 f"{self.BASE_URL}/BBBC006_results_bray.csv",
             ],
             "local_path": f"data/BBBC006/z_{z_plane:02}",

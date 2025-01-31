@@ -24,7 +24,7 @@ class BBBCDataset(Dataset):
     def __init__(self, dataset_cls, transform=None, target_transform=None):
         self.dataset = dataset_cls()
         self.image_paths = self.dataset.get_image_paths()
-        self.segmentation_path = self.dataset.get_segmentation_path()
+        self.label_path = self.dataset.get_label_paths()
 
         if not self.image_paths:
             raise RuntimeError(f"No images found in {dataset_cls.__name__}")
@@ -40,8 +40,8 @@ class BBBCDataset(Dataset):
         image = self.load_image(image_path)
 
         label = None
-        if self.segmentation_path:
-            label = self.load_image(self.segmentation_path)
+        if self.label_path:
+            label = self.load_image(self.label_path)
 
         # Apply transforms if provided
         if self.transform:
