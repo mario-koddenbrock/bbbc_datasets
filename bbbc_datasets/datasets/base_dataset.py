@@ -1,5 +1,6 @@
 import os
 import zipfile
+import difflib
 
 import pandas as pd
 import numpy as np
@@ -178,8 +179,15 @@ class BaseBBBCDataset:
         if not label_paths:
             return None
 
-        # TODO find the corresponding label mask
-        label_path = label_paths[0]
+        # find the label path the most similar to the image path
+        label_path = difflib.get_close_matches(
+            image_path, label_paths, n=1, cutoff=0.25
+        )
+
+        if not label_path:
+            raise FileNotFoundError(f"Label mask not found for {image_path}")
+        else:
+            label_path = label_path[0]
 
         if os.path.exists(label_path):
             return load_image(label_path)
