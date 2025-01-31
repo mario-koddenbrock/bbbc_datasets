@@ -51,6 +51,7 @@ class BBBC038(BaseBBBCDataset):
         ]
         self.label_path = None
         self.metadata_paths = None
+        self.is_3d = False
 
         super().__init__("BBBC038")
 

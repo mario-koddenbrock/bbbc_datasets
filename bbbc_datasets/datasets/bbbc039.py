@@ -36,5 +36,6 @@ class BBBC039(BaseBBBCDataset):
         self.image_paths = [os.path.join(self.BASE_URL, "images.zip")]
         self.label_path = os.path.join(self.BASE_URL, "masks.zip")
         self.metadata_paths = [os.path.join(self.BASE_URL, "metadata.zip")]
-
+        self.is_3d = False
+        # TODO what is the 3rd dimension of the masks?
         super().__init__("BBBC039")

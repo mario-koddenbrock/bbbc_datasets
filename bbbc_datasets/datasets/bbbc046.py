@@ -72,7 +72,7 @@ class BBBC046(BaseBBBCDataset):
 
         self.IMAGE_SUBDIR = "all"
         self.local_path = os.path.join(self.GLOBAL_STORAGE_PATH, "BBBC046", phenotype)
-
+        self.is_3d = False
         self.image_paths = [os.path.join(self.BASE_URL, self.PHENOTYPES[phenotype])]
         self.label_path = (
             None  # Ground truth masks & metadata are inherently generated.

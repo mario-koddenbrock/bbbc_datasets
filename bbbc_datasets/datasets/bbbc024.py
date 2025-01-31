@@ -65,5 +65,6 @@ class BBBC024(BaseBBBCDataset):
             self.BASE_URL, f"BBBC024_v1_{self.prob_str}_{self.snr_str}_foreground.zip"
         )
         self.metadata_paths = None
+        self.is_3d = True
 
         super().__init__(f"BBBC024_{self.prob_str}_{self.snr_str}")

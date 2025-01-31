@@ -34,5 +34,6 @@ class BBBC010(BaseBBBCDataset):
             os.path.join(self.BASE_URL, "BBBC010_v1_foreground_eachworm.zip")
         ]
         self.metadata_paths = None
+        self.is_3d = False
 
         super().__init__("BBBC010")

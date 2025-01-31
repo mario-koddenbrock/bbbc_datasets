@@ -49,5 +49,6 @@ class BBBC006(BaseBBBCDataset):
             os.path.join(self.BASE_URL, "BBBC006_v1_counts.csv"),
             os.path.join(self.BASE_URL, "BBBC006_results_bray.csv"),
         ]
+        self.is_3d = False
 
         super().__init__(f"BBBC006_z_{z_plane:02}")

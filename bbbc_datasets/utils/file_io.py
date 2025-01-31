@@ -30,14 +30,4 @@ def load_image(image_path):
     if isinstance(img, Image.Image):
         img = np.array(img)
 
-    # Extract middle slice from 3D images
-    if len(img.shape) == 3:
-        if img.shape[2] > 4:  # TODO
-            mid_slice = img.shape[0] // 2  # Middle slice
-            img = img[mid_slice]
-
-    # # Normalize grayscale images
-    # if len(img.shape) == 2:  # Grayscale image
-    #     img = (img - np.min(img)) / (np.max(img) - np.min(img) + 1e-8)  # Normalize
-
     return img

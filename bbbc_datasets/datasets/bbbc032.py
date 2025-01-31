@@ -39,5 +39,6 @@ class BBBC032(BaseBBBCDataset):
             self.BASE_URL, "BBBC032_v1_DatasetGroundTruth.tif"
         )
         self.metadata_paths = None
+        self.is_3d = False
 
         super().__init__("BBBC032")

@@ -16,6 +16,10 @@ def display_dataset_samples():
 
         image_paths = dataset.get_image_paths()
 
+        print(
+            f"Dataset: {dataset_cls.__name__} ({len(image_paths)} images, 3D={dataset.is_3d})"
+        )
+
         if not image_paths:
             print(f"Skipping {dataset_cls.__name__} (No images found)")
             continue
@@ -26,6 +30,12 @@ def display_dataset_samples():
 
         # Load segmentation (if available)
         label = dataset.get_label(image_path)
+
+        # Extract middle slice from 3D images
+        if dataset.is_3d:
+            mid_slice = image.shape[0] // 2  # Middle slice
+            image = image[mid_slice]
+            label = label[mid_slice]
 
         # Display images
         fig, axes = plt.subplots(1, 2 if label is not None else 1, figsize=(10, 5))

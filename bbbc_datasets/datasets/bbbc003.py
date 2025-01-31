@@ -35,5 +35,6 @@ class BBBC003(BaseBBBCDataset):
         self.metadata_paths = [
             "https://data.broadinstitute.org/bbbc/BBBC003/BBBC003_v1_counts.txt"
         ]
+        self.is_3d = False
 
         super().__init__("BBBC003")

@@ -39,7 +39,7 @@ class BBBC050(BaseBBBCDataset):
 
     def __init__(self):
         self.local_path = os.path.join(self.GLOBAL_STORAGE_PATH, "BBBC050")
-
+        self.is_3d = False
         self.image_paths = [os.path.join(self.BASE_URL, "Images.zip")]
         self.label_path = os.path.join(self.BASE_URL, "GroundTruth.zip")
         self.metadata_paths = None

@@ -51,6 +51,7 @@ class BBBC027(BaseBBBCDataset):
             os.path.join(self.BASE_URL, f"BBBC027_{snr_str}_foreground_part3.zip"),
         ]
         self.metadata_paths = None
+        self.is_3d = True
 
         super().__init__(f"BBBC027_{snr_str}")
 

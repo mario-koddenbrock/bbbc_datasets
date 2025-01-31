@@ -30,5 +30,6 @@ class BBBC008(BaseBBBCDataset):
         self.image_paths = [os.path.join(self.BASE_URL, "BBBC008_v1_images.zip")]
         self.label_path = os.path.join(self.BASE_URL, "BBBC008_v1_foreground.zip")
         self.metadata_paths = None
+        self.is_3d = False
 
         super().__init__("BBBC008")

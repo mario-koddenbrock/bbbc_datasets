@@ -29,6 +29,7 @@ class BaseBBBCDataset:
     local_path = None
     label_path = None
     image_paths = None
+    is_3d = False
 
     def __init__(self, dataset_name):
         """

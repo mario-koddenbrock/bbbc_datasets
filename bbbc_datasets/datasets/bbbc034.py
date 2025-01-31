@@ -47,5 +47,6 @@ class BBBC034(BaseBBBCDataset):
         self.metadata_paths = [
             os.path.join(self.BASE_URL, "BBBC034DatasetGroundTruth.csv")
         ]
+        self.is_3d = False
 
         super().__init__("BBBC034")

@@ -35,5 +35,6 @@ class BBBC005(BaseBBBCDataset):
         self.image_paths = [os.path.join(self.BASE_URL, "BBBC005_v1_images.zip")]
         self.label_path = os.path.join(self.BASE_URL, "BBBC005_v1_ground_truth.zip")
         self.metadata_paths = [os.path.join(self.BASE_URL, "BBBC005_results_bray.csv")]
+        self.is_3d = False
 
         super().__init__("BBBC005")
