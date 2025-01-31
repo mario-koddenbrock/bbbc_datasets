@@ -1,3 +1,5 @@
+import os
+
 from bbbc_datasets.datasets.base_dataset import BaseBBBCDataset
 
 
@@ -36,23 +38,22 @@ class BBBC027(BaseBBBCDataset):
             )
 
         snr_str = self.SNR_LEVELS[snr]
+        self.local_path = os.path.join(self.GLOBAL_STORAGE_PATH, "BBBC027", snr_str)
 
-        dataset_info = {
-            "image_paths": [
-                f"{self.BASE_URL}/BBBC027_{snr_str}_images_part1.zip",
-                f"{self.BASE_URL}/BBBC027_{snr_str}_images_part2.zip",
-                f"{self.BASE_URL}/BBBC027_{snr_str}_images_part3.zip",
-            ],
-            "label_path": [
-                f"{self.BASE_URL}/BBBC027_{snr_str}_foreground_part1.zip",
-                f"{self.BASE_URL}/BBBC027_{snr_str}_foreground_part2.zip",
-                f"{self.BASE_URL}/BBBC027_{snr_str}_foreground_part3.zip",
-            ],
-            "metadata_paths": [],
-            "local_path": f"data/BBBC027/{snr_str}",
-        }
+        self.image_paths = [
+            os.path.join(self.BASE_URL, f"BBBC027_{snr_str}_images_part1.zip"),
+            os.path.join(self.BASE_URL, f"BBBC027_{snr_str}_images_part2.zip"),
+            os.path.join(self.BASE_URL, f"BBBC027_{snr_str}_images_part3.zip"),
+        ]
+        self.label_path = [
+            os.path.join(self.BASE_URL, f"BBBC027_{snr_str}_foreground_part1.zip"),
+            os.path.join(self.BASE_URL, f"BBBC027_{snr_str}_foreground_part2.zip"),
+            os.path.join(self.BASE_URL, f"BBBC027_{snr_str}_foreground_part3.zip"),
+        ]
+        self.metadata_paths = None
 
-        super().__init__(f"BBBC027_{snr_str}", dataset_info)
+        super().__init__(f"BBBC027_{snr_str}")
+
         #
         # self.IMAGE_SUBDIR = []
         # self.SEGMENTATION_SUBDIR = []

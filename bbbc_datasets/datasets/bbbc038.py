@@ -1,4 +1,9 @@
+import os
+
+import numpy as np
+
 from bbbc_datasets.datasets.base_dataset import BaseBBBCDataset
+from bbbc_datasets.utils.file_io import load_image
 
 
 class BBBC038(BaseBBBCDataset):
@@ -33,39 +38,50 @@ class BBBC038(BaseBBBCDataset):
 
     BASE_URL = "https://data.broadinstitute.org/bbbc/BBBC038"
 
-    def __init__(self, dataset_version="stage1_train"):
+    def __init__(self):
         """
         Initialize the dataset for a specific dataset version.
 
-        :param dataset_version: One of ("stage1_train", "stage1_test", "stage2_test_final").
         """
-        allowed_versions = ["stage1_train", "stage1_test", "stage2_test_final"]
-        if dataset_version not in allowed_versions:
-            raise ValueError(
-                f"Invalid dataset version: {dataset_version}. Choose from {allowed_versions}"
-            )
 
-        dataset_info = {
-            "image_paths": [f"{self.BASE_URL}/{dataset_version}.zip"],
-            "label_path": (
-                f"{self.BASE_URL}/stage1_train_labels.csv"
-                if dataset_version == "stage1_train"
-                else None
-            ),
-            "metadata_paths": [
-                f"{self.BASE_URL}/metadata.xlsx",
-                (
-                    f"{self.BASE_URL}/stage1_solution.csv"
-                    if dataset_version == "stage1_train"
-                    else None
-                ),
-                (
-                    f"{self.BASE_URL}/stage2_solution_final.csv"
-                    if dataset_version == "stage2_test_final"
-                    else None
-                ),
-            ],
-            "local_path": f"data/BBBC038/{dataset_version}",
-        }
+        self.IMAGE_SUBDIR = "all"
+        self.local_path = os.path.join(self.GLOBAL_STORAGE_PATH, "BBBC038")
+        self.image_paths = [
+            "https://github.com/lopuhin/kaggle-dsbowl-2018-dataset-fixes/archive/refs/heads/master.zip"
+        ]
+        self.label_path = None
+        self.metadata_paths = None
 
-        super().__init__(f"BBBC038_{dataset_version}", dataset_info)
+        super().__init__("BBBC038")
+
+    def get_image_paths(self):
+        """
+        Returns the list of image file paths.
+        """
+        images = self._get_paths(self.IMAGE_SUBDIR)
+
+        # filter images that do not conatin the word "masks"
+        images = [image for image in images if "masks" not in image]
+
+        return images
+
+    def get_label(self, image_path):
+        """
+        Returns the label mask for a given image path.
+        """
+
+        parent_folder = os.path.dirname(image_path)
+        mask_folder = parent_folder.replace("images", "masks")
+
+        # read the corresponding masks
+        mask_files = os.listdir(mask_folder)
+
+        image = load_image(image_path)
+        mask = np.zeros((image.shape[0], image.shape[1]), dtype=np.uint8)
+        for idx, mask_file in enumerate(mask_files):
+            current_mask = load_image(os.path.join(mask_folder, mask_file))
+
+            # setting all the pixels in the mask to the index of the mask
+            mask[current_mask > 0] = idx + 1
+
+        return mask

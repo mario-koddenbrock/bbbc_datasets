@@ -1,8 +1,12 @@
 import os
 import zipfile
 
+import pandas as pd
+import numpy as np
 import requests
 from tqdm import tqdm
+
+from bbbc_datasets.utils.file_io import load_image
 
 
 class BaseBBBCDataset:
@@ -21,7 +25,11 @@ class BaseBBBCDataset:
 
     IMAGE_FILTER = [".png", ".jpg", ".jpeg", ".tif", ".tiff", ".ics"]
 
-    def __init__(self, dataset_name, dataset_info):
+    local_path = None
+    label_path = None
+    image_paths = None
+
+    def __init__(self, dataset_name):
         """
         Initialize the dataset with name and file paths.
 
@@ -30,8 +38,9 @@ class BaseBBBCDataset:
         """
         self.ground_truth = None
         self.dataset_name = dataset_name
-        self.dataset_info = dataset_info
-        self.local_path = os.path.join(self.GLOBAL_STORAGE_PATH, dataset_name)
+
+        if not self.local_path:
+            raise ValueError("local_path not defined")
 
         # Ensure the dataset directory exists in the shared location
         os.makedirs(self.local_path, exist_ok=True)
@@ -39,30 +48,31 @@ class BaseBBBCDataset:
         # Download missing files
         self._download_files()
 
+        if self.label_path and isinstance(self.label_path, str):
+            local_file, unzip_folder = self.get_download_folder(
+                self.label_path, "label_path"
+            )
+            if self.label_path.endswith(".csv"):
+                self.ground_truth = local_file
+            elif self.label_path.endswith(".tif"):
+                self.ground_truth = local_file
+
     def _download_files(self):
         """
         Checks for missing dataset files and downloads them if necessary.
         """
-        for key, urls in self.dataset_info.items():
 
-            # always ignore local_path
-            if key == "local_path":
-                continue
+        if isinstance(self.image_paths, list):
+            for url in self.image_paths:
+                self._download_and_extract("image", url)
+        elif self.image_paths:
+            self._download_and_extract("image", self.image_paths)
 
-            # ifnore empty values
-            if not urls:
-                continue
-
-            # ignore metadata_paths for now
-            if key == "metadata_paths":
-                continue
-
-            if key.endswith("_path") or key.endswith("_paths"):
-                if isinstance(urls, list):
-                    for url in urls:
-                        self._download_and_extract(key, url)
-                elif urls:
-                    self._download_and_extract(key, urls)
+        if isinstance(self.label_path, list):
+            for url in self.label_path:
+                self._download_and_extract("label", url)
+        elif self.label_path:
+            self._download_and_extract("label", self.label_path)
 
     def _download_and_extract(self, key, url):
         """
@@ -71,17 +81,15 @@ class BaseBBBCDataset:
         if not url.startswith("http"):
             return  # Skip invalid URLs
 
-        filename = os.path.join(self.local_path, os.path.basename(url))
-        target_folder = self.IMAGE_SUBDIR if "image" in key else self.LABEL_SUBDIR
-        target_path = os.path.join(self.local_path, target_folder)
+        local_file, unzip_folder = self.get_download_folder(url, key)
 
-        if not os.path.exists(filename):
-            print(f"Downloading {filename}...")
+        if not os.path.exists(local_file):
+            print(f"Downloading {local_file}...")
             response = requests.get(url, stream=True)
             if response.status_code == 200:
                 total_size = int(response.headers.get("content-length", 0))
-                with open(filename, "wb") as f, tqdm(
-                    desc=filename,
+                with open(local_file, "wb") as f, tqdm(
+                    desc=local_file,
                     total=total_size,
                     unit="B",
                     unit_scale=True,
@@ -91,17 +99,19 @@ class BaseBBBCDataset:
                         if chunk:
                             f.write(chunk)
                             bar.update(len(chunk))
-
-        if os.path.exists(filename) and not os.path.exists(target_path):
-            # Extract if it's a zip file
-            if filename.endswith(".zip"):
-                self._extract_zip(filename, target_path)
-            elif filename.endswith(".csv"):
-                self.ground_truth = filename
-            elif filename.endswith(".tif"):
-                self.ground_truth = filename
             else:
-                print(f"Failed to download {url}")
+                raise FileNotFoundError(f"Failed to download {url}")
+
+        if os.path.exists(local_file) and not os.path.exists(unzip_folder):
+            # Extract if it's a zip file
+            if local_file.endswith(".zip"):
+                self._extract_zip(local_file, unzip_folder)
+
+    def get_download_folder(self, url, key):
+        local_file = os.path.join(self.local_path, os.path.basename(url))
+        folder_name = self.IMAGE_SUBDIR if "image" in key else self.LABEL_SUBDIR
+        unzip_folder = os.path.join(self.local_path, folder_name)
+        return local_file, unzip_folder
 
     def _extract_zip(self, zip_path, extract_to=None):
         """
@@ -135,6 +145,46 @@ class BaseBBBCDataset:
         """
         images = self._get_paths(self.IMAGE_SUBDIR)
         return images
+
+    def get_label(self, image_path):
+        """
+        Returns the label mask for a given image path.
+        """
+        if self.ground_truth:
+            if self.ground_truth.endswith(".tif"):
+                return load_image(self.ground_truth)
+            elif self.ground_truth.endswith(".csv"):
+                gt_all = pd.read_csv(self.ground_truth)
+                image_id = os.path.basename(image_path).split(".")[0]
+                gt_image = gt_all[gt_all["ImageId"] == image_id]
+                pixels = gt_image["EncodedPixels"]
+
+                image = load_image(image_path)
+                labels = np.zeros_like(image)
+
+                for pxls in pixels:
+                    if isinstance(pxls, str):
+                        pxls = pxls.split(" ")
+                        pxls = [int(p) for p in pxls]
+                        for i in range(0, len(pxls), 2):
+                            labels[pxls[i] : pxls[i + 1]] = 1
+                return labels
+            else:
+                raise NotImplementedError("Label type not supported.")
+
+        # Find the corresponding label mask
+        label_paths = self.get_label_paths()
+
+        if not label_paths:
+            return None
+
+        # TODO find the corresponding label mask
+        label_path = label_paths[0]
+
+        if os.path.exists(label_path):
+            return load_image(label_path)
+        else:
+            raise FileNotFoundError(f"Label mask not found for {image_path}")
 
     def get_label_paths(self):
         """

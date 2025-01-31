@@ -15,7 +15,6 @@ def display_dataset_samples():
         dataset = dataset_cls()
 
         image_paths = dataset.get_image_paths()
-        label_paths = dataset.get_label_paths()
 
         if not image_paths:
             print(f"Skipping {dataset_cls.__name__} (No images found)")
@@ -26,11 +25,7 @@ def display_dataset_samples():
         image = load_image(image_path)
 
         # Load segmentation (if available)
-        label = None
-        if label_paths:
-            label_path = label_paths[0]
-            if os.path.exists(label_path):
-                label = load_image(label_path)
+        label = dataset.get_label(image_path)
 
         # Display images
         fig, axes = plt.subplots(1, 2 if label is not None else 1, figsize=(10, 5))

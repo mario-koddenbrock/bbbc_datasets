@@ -1,3 +1,5 @@
+import os
+
 from bbbc_datasets.datasets.base_dataset import BaseBBBCDataset
 
 
@@ -43,12 +45,15 @@ class BBBC004(BaseBBBCDataset):
             )
 
         self.prob_str = self.OVERLAP_PROBABILITIES[overlap_probability]
+        self.local_path = os.path.join(
+            self.GLOBAL_STORAGE_PATH, "BBBC004", f"prob_{self.prob_str}"
+        )
+        self.image_paths = [
+            os.path.join(self.BASE_URL, f"BBBC004_v1_{self.prob_str}_images.zip")
+        ]
+        self.label_path = os.path.join(
+            self.BASE_URL, f"BBBC004_v1_{self.prob_str}_foreground.zip"
+        )
+        self.metadata_paths = None
 
-        dataset_info = {
-            "image_paths": [f"{self.BASE_URL}/BBBC004_v1_{self.prob_str}_images.zip"],
-            "label_path": f"{self.BASE_URL}/BBBC004_v1_{self.prob_str}_foreground.zip",
-            "metadata_paths": [],
-            "local_path": f"data/BBBC004/{self.prob_str}",
-        }
-
-        super().__init__(f"BBBC004_{self.prob_str}", dataset_info)
+        super().__init__(f"BBBC004_{self.prob_str}")

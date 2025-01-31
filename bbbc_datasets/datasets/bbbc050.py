@@ -1,3 +1,5 @@
+import os
+
 from bbbc_datasets.datasets.base_dataset import BaseBBBCDataset
 
 
@@ -36,11 +38,10 @@ class BBBC050(BaseBBBCDataset):
     BASE_URL = "https://data.broadinstitute.org/bbbc/BBBC050"
 
     def __init__(self):
-        dataset_info = {
-            "image_paths": [f"{self.BASE_URL}/Images.zip"],
-            "label_path": f"{self.BASE_URL}/GroundTruth.zip",
-            "metadata_paths": [],
-            "local_path": "data/BBBC050",
-        }
+        self.local_path = os.path.join(self.GLOBAL_STORAGE_PATH, "BBBC050")
 
-        super().__init__("BBBC050", dataset_info)
+        self.image_paths = [os.path.join(self.BASE_URL, "Images.zip")]
+        self.label_path = os.path.join(self.BASE_URL, "GroundTruth.zip")
+        self.metadata_paths = None
+
+        super().__init__("BBBC050")

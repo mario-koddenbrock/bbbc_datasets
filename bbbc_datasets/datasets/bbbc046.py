@@ -70,16 +70,16 @@ class BBBC046(BaseBBBCDataset):
                 f"Invalid dataset name: {phenotype}. Choose from {list(self.PHENOTYPES.keys())}"
             )
 
-        dataset_info = {
-            "image_paths": [f"{self.BASE_URL}/{self.PHENOTYPES[phenotype]}"],
-            "label_path": None,  # Ground truth masks & metadata are inherently generated.
-            "metadata_paths": [],
-            "local_path": f"data/BBBC046/{phenotype}",
-        }
-
         self.IMAGE_SUBDIR = "all"
+        self.local_path = os.path.join(self.GLOBAL_STORAGE_PATH, "BBBC046", phenotype)
 
-        super().__init__(f"BBBC046_{phenotype}", dataset_info)
+        self.image_paths = [os.path.join(self.BASE_URL, self.PHENOTYPES[phenotype])]
+        self.label_path = (
+            None  # Ground truth masks & metadata are inherently generated.
+        )
+        self.metadata_paths = None
+
+        super().__init__(f"BBBC046_{phenotype}")
 
         self.IMAGE_SUBDIR = os.path.join(
             "all",

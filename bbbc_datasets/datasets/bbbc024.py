@@ -1,3 +1,5 @@
+import os
+
 from bbbc_datasets.datasets.base_dataset import BaseBBBCDataset
 
 
@@ -46,15 +48,22 @@ class BBBC024(BaseBBBCDataset):
 
         self.prob_str = self.CLUSTERING_PROBABILITIES[clustering_probability]
         self.snr_str = self.SNR_LEVELS[snr]
+        self.local_path = os.path.join(
+            self.GLOBAL_STORAGE_PATH, "BBBC024", f"{self.prob_str}_{self.snr_str}"
+        )
 
-        dataset_info = {
-            "image_paths": [
-                f"{self.BASE_URL}/BBBC024_v1_{self.prob_str}_{self.snr_str}_images.zip",
-                f"{self.BASE_URL}/BBBC024_v1_{self.prob_str}_{self.snr_str}_images_TIFF.zip",
-            ],
-            "label_path": f"{self.BASE_URL}/BBBC024_v1_{self.prob_str}_{self.snr_str}_foreground.zip",
-            "metadata_paths": [],
-            "local_path": f"data/BBBC024/{self.prob_str}_{self.snr_str}",
-        }
+        self.image_paths = [
+            os.path.join(
+                self.BASE_URL, f"BBBC024_v1_{self.prob_str}_{self.snr_str}_images.zip"
+            ),
+            os.path.join(
+                self.BASE_URL,
+                f"BBBC024_v1_{self.prob_str}_{self.snr_str}_images_TIFF.zip",
+            ),
+        ]
+        self.label_path = os.path.join(
+            self.BASE_URL, f"BBBC024_v1_{self.prob_str}_{self.snr_str}_foreground.zip"
+        )
+        self.metadata_paths = None
 
-        super().__init__(f"BBBC024_{self.prob_str}_{self.snr_str}", dataset_info)
+        super().__init__(f"BBBC024_{self.prob_str}_{self.snr_str}")

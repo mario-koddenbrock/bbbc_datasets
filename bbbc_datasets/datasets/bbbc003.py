@@ -1,3 +1,5 @@
+import os
+
 from bbbc_datasets.datasets.base_dataset import BaseBBBCDataset
 
 
@@ -23,14 +25,15 @@ class BBBC003(BaseBBBCDataset):
     """
 
     def __init__(self):
-        dataset_info = {
-            "image_paths": [
-                "https://data.broadinstitute.org/bbbc/BBBC003/BBBC003_v1_images.zip"
-            ],
-            "label_path": "https://data.broadinstitute.org/bbbc/BBBC003/BBBC003_v1_foreground.zip",
-            "metadata_paths": [
-                "https://data.broadinstitute.org/bbbc/BBBC003/BBBC003_v1_counts.txt"
-            ],
-            "local_path": "data/BBBC003",
-        }
-        super().__init__("BBBC003", dataset_info)
+        self.local_path = os.path.join(self.GLOBAL_STORAGE_PATH, "BBBC003")
+        self.image_paths = [
+            "https://data.broadinstitute.org/bbbc/BBBC003/BBBC003_v1_images.zip"
+        ]
+        self.label_path = (
+            "https://data.broadinstitute.org/bbbc/BBBC003/BBBC003_v1_foreground.zip"
+        )
+        self.metadata_paths = [
+            "https://data.broadinstitute.org/bbbc/BBBC003/BBBC003_v1_counts.txt"
+        ]
+
+        super().__init__("BBBC003")

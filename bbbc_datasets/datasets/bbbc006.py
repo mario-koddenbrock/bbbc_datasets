@@ -1,3 +1,5 @@
+import os
+
 from bbbc_datasets.datasets.base_dataset import BaseBBBCDataset
 
 
@@ -36,14 +38,16 @@ class BBBC006(BaseBBBCDataset):
             raise ValueError(f"Invalid z-plane: {z_plane}. Choose between 0 and 32.")
 
         self.z_plane = z_plane
-        dataset_info = {
-            "image_paths": [f"{self.BASE_URL}/BBBC006_v1_images_z_{z_plane:02}.zip"],
-            "label_path": f"{self.BASE_URL}/BBBC006_v1_labels.zip",
-            "metadata_paths": [
-                f"{self.BASE_URL}/BBBC006_v1_counts.csv",
-                f"{self.BASE_URL}/BBBC006_results_bray.csv",
-            ],
-            "local_path": f"data/BBBC006/z_{z_plane:02}",
-        }
+        self.local_path = os.path.join(
+            self.GLOBAL_STORAGE_PATH, "BBBC006", f"z_{z_plane:02}"
+        )
+        self.image_paths = [
+            os.path.join(self.BASE_URL, f"BBBC006_v1_images_z_{z_plane:02}.zip")
+        ]
+        self.label_path = os.path.join(self.BASE_URL, "BBBC006_v1_labels.zip")
+        self.metadata_paths = [
+            os.path.join(self.BASE_URL, "BBBC006_v1_counts.csv"),
+            os.path.join(self.BASE_URL, "BBBC006_results_bray.csv"),
+        ]
 
-        super().__init__(f"BBBC006_z_{z_plane:02}", dataset_info)
+        super().__init__(f"BBBC006_z_{z_plane:02}")
