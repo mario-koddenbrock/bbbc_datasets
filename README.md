@@ -1,6 +1,6 @@
 # BBBC Datasets - PyTorch Dataset Manager
 
-#  ![BBBC Logo](https://bbbc.broadinstitute.org/files/bbbc/files/broadinstlogofordigitalrgb.png)
+![BBBC Logo](logo.png)
 
 ## 📌 Overview
 
