@@ -1,7 +1,5 @@
 # BBBC Datasets - PyTorch Dataset Manager
 
-<img src="assets/header.webp" alt="Reposetory Header Image" width="400" height="200">
-
 ## 📌 Overview
 
 This package provides a **PyTorch-compatible dataset manager** for
