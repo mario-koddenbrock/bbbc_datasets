@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="bbbc_datasets",
-    version="0.1.0",
+    version="0.1.1",
     author="Mario Koddenbrock",
     author_email="koddenbrock@gmail.com",
     description="PyTorch-compatible dataset manager for BBBC datasets",
