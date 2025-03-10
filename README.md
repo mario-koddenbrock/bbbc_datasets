@@ -4,8 +4,8 @@
 
 ## 📌 Overview
 
-This package provides a **PyTorch-compatible dataset manager** for **Broad Bioimage Benchmark Collection (BBBC) datasets
-**.
+This package provides a **PyTorch-compatible dataset manager** for
+**Broad Bioimage Benchmark Collection (BBBC) datasets**.
 
 It allows users to:
 
