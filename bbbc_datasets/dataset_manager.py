@@ -85,12 +85,17 @@ class DatasetManager:
     """
 
     @staticmethod
-    def list_datasets():
-        """Prints a summary of available BBBC datasets."""
-        print("\n📂 Available BBBC Datasets:")
-        for dataset_cls in DATASETS:
-            dataset = dataset_cls()
-            print(f"- {dataset_cls.__name__}: {dataset.dataset_name}")
+    def list_available_datasets(filter_3d=None):
+        """
+        Lists all available BBBC datasets without downloading them.
+        :param filter_3d: If True, lists only 3D datasets. If False, lists only 2D datasets. If None, lists all datasets.
+        """
+        print("📂 Available BBBC Datasets:")
+        filtered_datasets = DatasetManager.filter_datasets(filter_3d)
+        for dataset_cls in filtered_datasets:
+            print(
+                f"- {dataset_cls.__name__}: {dataset_cls.__doc__.splitlines()[1].strip()}"
+            )
 
     @staticmethod
     def get_dataset(name, transform=None, target_transform=None):
@@ -113,10 +118,23 @@ class DatasetManager:
             f"Dataset {name} not found. Use DatasetManager.list_datasets() to see available datasets."
         )
 
+    @staticmethod
+    def filter_datasets(filter_3d=None):
+        """
+        Filters the datasets based on whether they are 2D, 3D, or both.
+        :param filter_3d: If True, filters only 3D datasets. If False, filters only 2D datasets. If None, includes all datasets.
+        :return: Filtered list of dataset classes.
+        """
+        if filter_3d is None:
+            return DATASETS
+        return [
+            dataset_cls for dataset_cls in DATASETS if dataset_cls().is_3d == filter_3d
+        ]
+
 
 if __name__ == "__main__":
     # Example Usage
-    DatasetManager.list_datasets()
+    DatasetManager.list_available_datasets()
 
     # Load a dataset
     dataset = DatasetManager.get_dataset("BBBC003")
