@@ -58,7 +58,12 @@ class BBBC046(BaseBBBCDataset):
     }
 
     def __init__(
-        self, phenotype="WT-ID550", fluorescence_level="0.25", anisotropy_ratio=1
+        self,
+        phenotype="WT-ID550",
+        fluorescence_level="0.25",
+        anisotropy_ratio=1,
+        *args,
+        **kwargs,
     ):
         """
         Initialize the dataset for a specific phenotype and sequence ID.
@@ -71,7 +76,7 @@ class BBBC046(BaseBBBCDataset):
             )
 
         self.IMAGE_SUBDIR = "all"
-        self.local_path = os.path.join(self.GLOBAL_STORAGE_PATH, "BBBC046", phenotype)
+        self.local_path = os.path.join(self.download_dir, "BBBC046", phenotype)
         self.is_3d = False
         self.image_paths = [os.path.join(self.BASE_URL, self.PHENOTYPES[phenotype])]
         self.label_path = (
@@ -79,7 +84,7 @@ class BBBC046(BaseBBBCDataset):
         )
         self.metadata_paths = None
 
-        super().__init__(f"BBBC046_{phenotype}")
+        super().__init__(f"BBBC046_{phenotype}", *args, **kwargs)
 
         self.IMAGE_SUBDIR = os.path.join(
             "all",

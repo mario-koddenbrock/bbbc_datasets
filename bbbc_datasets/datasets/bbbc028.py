@@ -24,11 +24,12 @@ class BBBC028(BaseBBBCDataset):
 
     BASE_URL = "https://data.broadinstitute.org/bbbc/BBBC028"
 
-    def __init__(self):
-        self.local_path = os.path.join(self.GLOBAL_STORAGE_PATH, "BBBC028")
-        self.image_paths = [os.path.join(self.BASE_URL, "images.zip")]
-        self.label_path = os.path.join(self.BASE_URL, "ground_truth.zip")
-        self.metadata_paths = None
-        self.is_3d = False
-        # TODO: What is the 3rd dimension of the mask?
-        super().__init__("BBBC028")
+
+def __init__(self, *args, **kwargs):
+    self.local_path = os.path.join(self.download_dir, "BBBC028")
+    self.image_paths = [os.path.join(self.BASE_URL, "images.zip")]
+    self.label_path = os.path.join(self.BASE_URL, "ground_truth.zip")
+    self.metadata_paths = None
+    self.is_3d = False
+    # TODO: What is the 3rd dimension of the mask?
+    super().__init__("BBBC028", *args, **kwargs)

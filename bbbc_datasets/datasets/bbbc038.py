@@ -38,14 +38,14 @@ class BBBC038(BaseBBBCDataset):
 
     BASE_URL = "https://data.broadinstitute.org/bbbc/BBBC038"
 
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
         """
         Initialize the dataset for a specific dataset version.
 
         """
 
         self.IMAGE_SUBDIR = "all"
-        self.local_path = os.path.join(self.GLOBAL_STORAGE_PATH, "BBBC038")
+        self.local_path = os.path.join(self.download_dir, "BBBC038")
         self.image_paths = [
             "https://github.com/lopuhin/kaggle-dsbowl-2018-dataset-fixes/archive/refs/heads/master.zip"
         ]
@@ -53,7 +53,7 @@ class BBBC038(BaseBBBCDataset):
         self.metadata_paths = None
         self.is_3d = False
 
-        super().__init__("BBBC038")
+        super().__init__("BBBC038", *args, **kwargs)
 
     def get_image_paths(self):
         """

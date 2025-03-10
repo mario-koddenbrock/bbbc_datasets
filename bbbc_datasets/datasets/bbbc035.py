@@ -30,13 +30,12 @@ class BBBC035(BaseBBBCDataset):
 
     BASE_URL = "https://data.broadinstitute.org/bbbc/BBBC035"
 
-    def __init__(self):
-        self.local_path = os.path.join(self.GLOBAL_STORAGE_PATH, "BBBC035")
-        self.image_paths = [os.path.join(self.BASE_URL, "BBBC035_v1_dataset.zip")]
-        self.label_path = os.path.join(
-            self.BASE_URL, "BBBC035_v1_DatasetGroundTruth.zip"
-        )
-        self.metadata_paths = None
-        self.is_3d = False
 
-        super().__init__("BBBC035")
+def __init__(self, *args, **kwargs):
+    self.local_path = os.path.join(self.download_dir, "BBBC035")
+    self.image_paths = [os.path.join(self.BASE_URL, "BBBC035_v1_dataset.zip")]
+    self.label_path = os.path.join(self.BASE_URL, "BBBC035_v1_DatasetGroundTruth.zip")
+    self.metadata_paths = None
+    self.is_3d = False
+
+    super().__init__("BBBC035", *args, **kwargs)

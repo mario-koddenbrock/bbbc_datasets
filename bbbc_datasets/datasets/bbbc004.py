@@ -33,7 +33,7 @@ class BBBC004(BaseBBBCDataset):
         0.60: "060",
     }
 
-    def __init__(self, overlap_probability=0.00):
+    def __init__(self, overlap_probability=0.00, *args, **kwargs):
         """
         Initialize the dataset with a specific overlap probability.
 
@@ -46,7 +46,7 @@ class BBBC004(BaseBBBCDataset):
 
         self.prob_str = self.OVERLAP_PROBABILITIES[overlap_probability]
         self.local_path = os.path.join(
-            self.GLOBAL_STORAGE_PATH, "BBBC004", f"prob_{self.prob_str}"
+            self.download_dir, "BBBC004", f"prob_{self.prob_str}"
         )
         self.image_paths = [
             os.path.join(self.BASE_URL, f"BBBC004_v1_{self.prob_str}_images.zip")
@@ -57,4 +57,4 @@ class BBBC004(BaseBBBCDataset):
         self.metadata_paths = None
         self.is_3d = False
 
-        super().__init__(f"BBBC004_{self.prob_str}")
+        super().__init__(f"BBBC004_{self.prob_str}", *args, **kwargs)

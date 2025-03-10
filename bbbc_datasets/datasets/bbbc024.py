@@ -29,7 +29,7 @@ class BBBC024(BaseBBBCDataset):
 
     SNR_LEVELS = {"low": "lowSNR", "high": "highSNR"}
 
-    def __init__(self, clustering_probability=0, snr="high"):
+    def __init__(self, clustering_probability=0, snr="high", *args, **kwargs):
         """
         Initialize the dataset for a specific clustering probability and SNR level.
 
@@ -49,7 +49,7 @@ class BBBC024(BaseBBBCDataset):
         self.prob_str = self.CLUSTERING_PROBABILITIES[clustering_probability]
         self.snr_str = self.SNR_LEVELS[snr]
         self.local_path = os.path.join(
-            self.GLOBAL_STORAGE_PATH, "BBBC024", f"{self.prob_str}_{self.snr_str}"
+            self.download_dir, "BBBC024", f"{self.prob_str}_{self.snr_str}"
         )
 
         self.image_paths = [
@@ -67,4 +67,4 @@ class BBBC024(BaseBBBCDataset):
         self.metadata_paths = None
         self.is_3d = True
 
-        super().__init__(f"BBBC024_{self.prob_str}_{self.snr_str}")
+        super().__init__(f"BBBC024_{self.prob_str}_{self.snr_str}", *args, **kwargs)

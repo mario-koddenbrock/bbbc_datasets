@@ -20,7 +20,7 @@ class BaseBBBCDataset:
     """
 
     # Define a shared system-wide storage location
-    GLOBAL_STORAGE_PATH = os.path.expanduser("~/.bbbc_datasets/")
+    DEFAULT_PATH = os.path.expanduser("~/.bbbc_datasets/")
     IMAGE_SUBDIR = "images"
     LABEL_SUBDIR = "labels"
 
@@ -31,7 +31,7 @@ class BaseBBBCDataset:
     image_paths = None
     is_3d = False
 
-    def __init__(self, dataset_name):
+    def __init__(self, dataset_name, download_dir=None):
         """
         Initialize the dataset with name and file paths.
 
@@ -46,6 +46,11 @@ class BaseBBBCDataset:
 
         # Ensure the dataset directory exists in the shared location
         os.makedirs(self.local_path, exist_ok=True)
+
+        if not download_dir:
+            self.download_dir = self.DEFAULT_PATH
+        else:
+            self.download_dir = download_dir
 
         # Download missing files
         self._download_files()
@@ -81,7 +86,7 @@ class BaseBBBCDataset:
         Downloads and extracts a dataset file if it is missing.
         """
         if not url.startswith("http"):
-            return  # Skip invalid URLs
+            raise ValueError("url must start with http://")
 
         local_file, unzip_folder = self.get_download_folder(url, key)
 

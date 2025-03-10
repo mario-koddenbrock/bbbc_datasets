@@ -8,16 +8,17 @@ class Sartorius(BaseBBBCDataset):
     Sartorius Dataset: TODO
     """
 
-    def __init__(self):
 
-        # TODO https://www.kaggle.com/competitions/sartorius-cell-instance-segmentation/data
+def __init__(self, *args, **kwargs):
 
-        self.local_path = os.path.join(self.GLOBAL_STORAGE_PATH, "Sartorius")
-        self.image_paths = [
-            "",
-        ]
-        self.label_path = None
-        self.metadata_paths = None
-        self.is_3d = False
+    # TODO https://www.kaggle.com/competitions/sartorius-cell-instance-segmentation/data
 
-        super().__init__("Cellpose")
+    self.local_path = os.path.join(self.download_dir, "Sartorius")
+    self.image_paths = [
+        "",
+    ]
+    self.label_path = None
+    self.metadata_paths = None
+    self.is_3d = False
+
+    super().__init__("Cellpose", *args, **kwargs)
