@@ -67,7 +67,6 @@ python examples/load_dataset.py
 - BBBC039: Nuclei of U2OS Cells in a Chemical Screen.
 - BBBC046: FiloData3D - Synthetic 3D Time-Lapse Imaging of A549 Cells with Filopodia.
 - BBBC050: Nuclei of Mouse Embryonic Cells.
-...
 ```
 
 ---
@@ -128,6 +127,7 @@ python -m unittest tests/test_dataset_loading.py
 ## 📝 Up-next
 
 - **Thinking of what is up next**
+- **Maybe integrating other datasets as cellpose, livecell, etc.**
 
 ---
 
