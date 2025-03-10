@@ -90,7 +90,7 @@ class BaseBBBCDataset:
 
         local_file, unzip_folder = self.get_download_folder(url, key)
 
-        if not os.path.exists(local_file):
+        if not os.path.exists(unzip_folder):
             print(f"Downloading {local_file}...")
             response = requests.get(url, stream=True)
             if response.status_code == 200:
@@ -109,10 +109,11 @@ class BaseBBBCDataset:
             else:
                 raise FileNotFoundError(f"Failed to download {url}")
 
-        if os.path.exists(local_file) and not os.path.exists(unzip_folder):
             # Extract if it's a zip file
             if local_file.endswith(".zip"):
                 self._extract_zip(local_file, unzip_folder)
+                os.remove(local_file)  # Delete the zip file after extraction
+
 
     def get_download_folder(self, url, key):
         local_file = os.path.join(self.local_path, os.path.basename(url))
