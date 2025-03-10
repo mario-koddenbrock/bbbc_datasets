@@ -1,6 +1,6 @@
 # BBBC Datasets - PyTorch Dataset Manager
 
-![BBBC Logo](logo.png)
+<img src="assets/header.webp" alt="Reposetory Header Image" width="400" height="200">
 
 ## 📌 Overview
 
@@ -9,28 +9,27 @@ This package provides a **PyTorch-compatible dataset manager** for **Broad Bioim
 
 It allows users to:
 
-- **Download and manage BBBC datasets automatically** 📥
-- **Load datasets as PyTorch `Dataset` objects** 📊
-- **Handle 2D & 3D images properly** 🔬
-- **Support image augmentations via `torchvision.transforms`** 🎨
-- **List and select datasets dynamically** ⚡
+- **Download and manage BBBC datasets automatically**
+- **Load datasets as PyTorch `Dataset` objects**
+- **Handle 2D & 3D images properly**
+- **Support image augmentations via `torchvision.transforms`** (#TODO)
 
 ## 🚀 Installation
 
-### **1️⃣ Clone the Repository**
+### **Clone the Repository**
 
 ```bash
 git clone https://github.com/mario-koddenbrock/bbbc_datasets.git
 cd bbbc_datasets
 ```
 
-### **2️⃣ Install Dependencies**
+### **Install Dependencies**
 
 ```bash
 pip install -r requirements.txt
 ```
 
-#### 🔹 Dependencies:
+#### Dependencies:
 
 - `torch`, `torchvision` (Deep Learning Framework)
 - `numpy`, `tifffile`, `opencv-python` (Image Handling)
@@ -40,34 +39,61 @@ pip install -r requirements.txt
 
 ## 📂 Available Datasets
 
-You can list all available datasets:
+You can list all available datasets without downloading them:
 
 ```bash
-python utils/dataset_manager.py
+python examples/load_dataset.py
 ```
 
-🔹 **Example Output:**
+**Output:**
 
 ```
 📂 Available BBBC Datasets:
-- BBBC003: Dataset of Human Embryos (DIC Microscopy)
-- BBBC004: Synthetic Nuclei (Varying Clustering)
-- BBBC005: Focus Blur Synthetic Cells
+- BBBC003: DIC microscopy images of mouse embryos for segmentation analysis.
+- BBBC004: Synthetic fluorescence microscopy images of nuclei with varying clustering probabilities.
+- BBBC005: Simulated fluorescence microscopy images with varying focus blur.
+- BBBC006: Z-stack fluorescence microscopy images of human U2OS cells.
+- BBBC008: Dataset: Fluorescence microscopy images of human HT29 colon cancer cells.
+- BBBC010: Live/dead assay of C. elegans exposed to pathogens.
+- BBBC024: 3D Synthetic HL60 Cell Line Images with Varying Clustering Probability and SNR.
+- BBBC027: 3D Synthetic Colon Tissue Images with Varying SNR.
+- BBBC028: Polymerized Structures in Differential Interference Contrast (DIC) Microscopy.
+- BBBC029: Synthetic Differential Interference Contrast (DIC) Images.
+- BBBC032: 3D Mouse Embryo Blastocyst Cells.
+- BBBC033: 3D Mouse Trophoblast Stem Cells.
+- BBBC034: 3D Induced Pluripotent Human Stem Cells (hiPSC).
+- BBBC035: Simulated HL60 Cells from the Cell Tracking Challenge.
+- BBBC038: Kaggle 2018 Data Science Bowl - Nuclei Segmentation.
+- BBBC039: Nuclei of U2OS Cells in a Chemical Screen.
+- BBBC046: FiloData3D - Synthetic 3D Time-Lapse Imaging of A549 Cells with Filopodia.
+- BBBC050: Nuclei of Mouse Embryonic Cells.
 ...
+```
+
+---
+
+## 🎨 Visualizing Dataset Samples
+
+### **Display First Image from Each Dataset**
+
+##### Requires downloading datasets first!
+
+```bash
+python examples/load_dataset.py
 ```
 
 ---
 
 ## 📥 Download and Load a Dataset
 
-### **1️⃣ Load a Dataset as a PyTorch Dataset**
+### **Load a Dataset as a PyTorch Dataset**
 
 ```python
-from utils.dataset_manager import DatasetManager
+from bbbc_datasets.datasets.bbbc004 import BBBC004
 from torch.utils.data import DataLoader
 
-# Load BBBC003 dataset
-dataset = DatasetManager.get_dataset("BBBC003")
+# Load BBBC004 dataset
+dataset = BBBC004()
 
 # Create a DataLoader
 dataloader = DataLoader(dataset, batch_size=4, shuffle=True)
@@ -79,25 +105,9 @@ for images, labels in dataloader:
 
 ---
 
-## 🎨 Visualizing Dataset Samples
-
-### **2️⃣ Display First Image from Each Dataset**
-
-```bash
-python examples/load_dataset.py
-```
-
-🔹 **What Happens?**
-
-- **Loads the first image of each dataset** ✅
-- **Extracts the middle Z-slice if 3D** ✅
-- **Overlays segmentation labels (if available)** ✅
-
----
-
 ## 🛠 Running Tests
 
-### **3️⃣ Validate Dataset URLs**
+### **Validate Dataset URLs**
 
 ```bash
 python -m unittest tests/test_dataset_urls.py
@@ -105,7 +115,7 @@ python -m unittest tests/test_dataset_urls.py
 
 - **Checks if all dataset URLs are reachable** 🌍
 
-### **4️⃣ Verify Dataset Loading**
+### **Verify Dataset Loading**
 
 ```bash
 python -m unittest tests/test_dataset_loading.py
@@ -115,12 +125,9 @@ python -m unittest tests/test_dataset_loading.py
 
 ---
 
-## 📝 Roadmap
+## 📝 Up-next
 
-- ✅ **Support more BBBC datasets**
-- ✅ **Improve multi-channel image handling**
-- ⏳ **Add segmentation model training examples**
-- ⏳ **Extend transformations for data augmentation**
+- **Thinking of what is up next**
 
 ---
 
@@ -128,8 +135,8 @@ python -m unittest tests/test_dataset_loading.py
 
 Contributions are welcome! If you find issues or want to add new features, feel free to:
 
-- **Submit a Pull Request** 🔄
-- **Report Issues** in the GitHub Issues section 🚀
+- **Submit a Pull Request**
+- **Report Issues** in the GitHub Issues section
 
 ---
 
