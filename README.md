@@ -1,4 +1,4 @@
-# BBBC Datasets - PyTorch Dataset Manager
+# BBBC Segmentation Datasets (2D/3D) - A PyTorch Dataset Manager
 
 ## 📌 Overview
 
@@ -7,7 +7,7 @@ This package provides a **PyTorch-compatible dataset manager** for
 
 It allows users to:
 
-- **Download and manage BBBC datasets automatically**
+- **Download and manage BBBC segmentation datasets automatically**
 - **Load datasets as PyTorch `Dataset` objects**
 - **Handle 2D & 3D images properly**
 - **Support image augmentations via `torchvision.transforms`** (#TODO)
@@ -51,10 +51,20 @@ pip install -r requirements.txt
 
 ## 📂 Available Datasets
 
-You can list all available datasets without downloading them:
+You can list all available BBBC datasets without downloading them. 
+You can also filter the datasets to show only 2D, only 3D, or both types of datasets.
 
-```bash
-python examples/load_dataset.py
+```python
+from examples.load_dataset import list_available_datasets
+
+# List all datasets
+list_available_datasets()
+
+# List only 2D datasets
+list_available_datasets(filter_3d=False)
+
+# List only 3D datasets
+list_available_datasets(filter_3d=True)
 ```
 
 <details>
@@ -92,8 +102,20 @@ python examples/load_dataset.py
 
 ##### Requires downloading datasets first!
 
-```bash
-python examples/load_dataset.py
+You can display samples from the datasets. 
+Similar to listing datasets, you can filter the samples to show only 2D, only 3D, or both types of datasets.
+
+```python
+from examples.load_dataset import display_dataset_samples
+
+# Display samples from all datasets
+display_dataset_samples()
+
+# Display samples from only 2D datasets
+display_dataset_samples(filter_3d=False)
+
+# Display samples from only 3D datasets
+display_dataset_samples(filter_3d=True)
 ```
 
 ---
@@ -115,6 +137,22 @@ dataloader = DataLoader(dataset, batch_size=4, shuffle=True)
 # Iterate through data
 for images, labels in dataloader:
     print(f"Batch shape: {images.shape}, Labels: {labels.shape if labels is not None else 'None'}")
+```
+
+The filter_datasets function allows you to filter a list of dataset classes based on whether they are 2D, 3D, or both.
+
+```python
+from bbbc_datasets.utils.general import filter_datasets
+from tests import DATASETS
+
+# Filter all datasets
+datasets_all = filter_datasets(DATASETS)
+
+# Filter only 2D datasets
+datasets_2d = filter_datasets(DATASETS, filter_3d=False)
+
+# Filter only 3D datasets
+datasets_3d = filter_datasets(DATASETS, filter_3d=True)
 ```
 
 ---
