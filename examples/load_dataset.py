@@ -7,11 +7,23 @@ from bbbc_datasets.utils.file_io import load_image
 from tests import DATASETS  # Import shared dataset list
 
 
+def list_available_datasets():
+    """
+    Lists all available BBBC datasets without downloading them.
+    """
+    print("📂 Available BBBC Datasets:")
+    for dataset_cls in DATASETS:
+        print(
+            f"- {dataset_cls.__name__}: {dataset_cls.__doc__.splitlines()[1].strip()}"
+        )
+
+
 def display_dataset_samples():
     """
     Loops through all datasets, loads the first image and label, and displays them.
     """
     for dataset_cls in DATASETS:
+
         dataset = dataset_cls()
 
         image_paths = dataset.get_image_paths()
@@ -56,4 +68,5 @@ def display_dataset_samples():
 
 
 if __name__ == "__main__":
+    list_available_datasets()
     display_dataset_samples()
