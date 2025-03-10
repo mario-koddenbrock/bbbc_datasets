@@ -20,12 +20,27 @@ class TestDatasetURLs(unittest.TestCase):
         """Test if all dataset URLs are valid and accessible."""
         for dataset_cls in DATASETS:
             with self.subTest(dataset=dataset_cls.__name__):
-                dataset = dataset_cls()  # This does NOT download the data
+                dataset = dataset_cls(download_files=False)
 
                 urls = []
-                urls.extend(dataset.dataset_info.get("image_paths", []))
-                urls.append(dataset.dataset_info.get("label_path", ""))
-                urls.extend(dataset.dataset_info.get("metadata_paths", []))
+
+                if dataset.image_paths:
+                    if isinstance(dataset.image_paths, list):
+                        urls.extend(dataset.image_paths)
+                    else:
+                        urls.append(dataset.image_paths)
+
+                if dataset.label_path:
+                    if isinstance(dataset.label_path, list):
+                        urls.extend(dataset.label_path)
+                    else:
+                        urls.append(dataset.label_path)
+
+                if dataset.metadata_paths:
+                    if isinstance(dataset.metadata_paths, list):
+                        urls.extend(dataset.metadata_paths)
+                    else:
+                        urls.append(dataset.metadata_paths)
 
                 for url in urls:
                     if url:  # Ensure the URL is not empty

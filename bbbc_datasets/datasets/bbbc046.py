@@ -76,7 +76,7 @@ class BBBC046(BaseBBBCDataset):
             )
 
         self.IMAGE_SUBDIR = "all"
-        self.local_path = os.path.join(self.download_dir, "BBBC046", phenotype)
+        self.KEY = f"BBBC046_{phenotype}"
         self.is_3d = False
         self.image_paths = [os.path.join(self.BASE_URL, self.PHENOTYPES[phenotype])]
         self.label_path = (
@@ -84,7 +84,7 @@ class BBBC046(BaseBBBCDataset):
         )
         self.metadata_paths = None
 
-        super().__init__(f"BBBC046_{phenotype}", *args, **kwargs)
+        super().__init__(*args, **kwargs)
 
         self.IMAGE_SUBDIR = os.path.join(
             "all",

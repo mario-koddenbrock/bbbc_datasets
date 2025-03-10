@@ -1,9 +1,9 @@
+import difflib
 import os
 import zipfile
-import difflib
 
-import pandas as pd
 import numpy as np
+import pandas as pd
 import requests
 from tqdm import tqdm
 
@@ -20,40 +20,43 @@ class BaseBBBCDataset:
     """
 
     # Define a shared system-wide storage location
-    DEFAULT_PATH = os.path.expanduser("~/.bbbc_datasets/")
-    IMAGE_SUBDIR = "images"
-    LABEL_SUBDIR = "labels"
+    KEY: str = ""
+    DEFAULT_PATH: str = os.path.expanduser("~/.bbbc_datasets/")
+    IMAGE_SUBDIR: str = "images"
+    LABEL_SUBDIR: str = "labels"
 
     IMAGE_FILTER = [".png", ".jpg", ".jpeg", ".tif", ".tiff", ".ics"]
 
-    local_path = None
+    local_path: str = None
     label_path = None
     image_paths = None
-    is_3d = False
+    metadata_paths = None
 
-    def __init__(self, dataset_name, download_dir=None):
+    is_3d: bool = False
+
+    def __init__(self, download_dir=None, download_files=True):
         """
         Initialize the dataset with name and file paths.
 
-        :param dataset_name: The name of the dataset (e.g., "BBBC003").
-        :param dataset_info: Dictionary containing paths to images, label masks, and metadata.
+        :param download_dir: Optional directory to download dataset files from.
         """
+
+        if not self.KEY:
+            raise ValueError("KEY not defined")
+
         self.ground_truth = None
-        self.dataset_name = dataset_name
-
-        if not self.local_path:
-            raise ValueError("local_path not defined")
-
-        # Ensure the dataset directory exists in the shared location
-        os.makedirs(self.local_path, exist_ok=True)
 
         if not download_dir:
             self.download_dir = self.DEFAULT_PATH
         else:
             self.download_dir = download_dir
 
+        # Local dataset directory inside the download directory
+        self.local_path = os.path.join(self.download_dir, self.KEY)
+
         # Download missing files
-        self._download_files()
+        if download_files:
+            self._download_files()
 
         if self.label_path and isinstance(self.label_path, str):
             local_file, unzip_folder = self.get_download_folder(
@@ -68,6 +71,7 @@ class BaseBBBCDataset:
         """
         Checks for missing dataset files and downloads them if necessary.
         """
+        os.makedirs(self.local_path, exist_ok=True)
 
         if isinstance(self.image_paths, list):
             for url in self.image_paths:
@@ -113,7 +117,6 @@ class BaseBBBCDataset:
             if local_file.endswith(".zip"):
                 self._extract_zip(local_file, unzip_folder)
                 os.remove(local_file)  # Delete the zip file after extraction
-
 
     def get_download_folder(self, url, key):
         local_file = os.path.join(self.local_path, os.path.basename(url))

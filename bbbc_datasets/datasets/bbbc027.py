@@ -38,7 +38,7 @@ class BBBC027(BaseBBBCDataset):
             )
 
         snr_str = self.SNR_LEVELS[snr]
-        self.local_path = os.path.join(self.download_dir, "BBBC027", snr_str)
+        self.KEY = f"BBBC027_{snr_str}"
 
         self.image_paths = [
             os.path.join(self.BASE_URL, f"BBBC027_{snr_str}_images_part1.zip"),
@@ -53,7 +53,7 @@ class BBBC027(BaseBBBCDataset):
         self.metadata_paths = None
         self.is_3d = True
 
-        super().__init__(f"BBBC027_{snr_str}", *args, **kwargs)
+        super().__init__(*args, **kwargs)
 
         #
         # self.IMAGE_SUBDIR = []

@@ -28,7 +28,7 @@ class BBBC006(BaseBBBCDataset):
 
     BASE_URL = "https://data.broadinstitute.org/bbbc/BBBC006"
 
-    def __init__(self, z_plane=16):
+    def __init__(self, z_plane=16, *args, **kwargs):
         """
         Initialize the dataset for a specific z-plane.
 
@@ -38,7 +38,7 @@ class BBBC006(BaseBBBCDataset):
             raise ValueError(f"Invalid z-plane: {z_plane}. Choose between 0 and 32.")
 
         self.z_plane = z_plane
-        self.local_path = os.path.join(self.download_dir, "BBBC006", f"z_{z_plane:02}")
+        self.KEY = f"BBBC006_Z{z_plane:02}"
         self.image_paths = [
             os.path.join(self.BASE_URL, f"BBBC006_v1_images_z_{z_plane:02}.zip")
         ]
@@ -49,4 +49,4 @@ class BBBC006(BaseBBBCDataset):
         ]
         self.is_3d = False
 
-        super().__init__(f"BBBC006_z_{z_plane:02}", self.metadata_paths)
+        super().__init__(*args, **kwargs)

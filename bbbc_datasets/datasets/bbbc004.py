@@ -45,9 +45,8 @@ class BBBC004(BaseBBBCDataset):
             )
 
         self.prob_str = self.OVERLAP_PROBABILITIES[overlap_probability]
-        self.local_path = os.path.join(
-            self.download_dir, "BBBC004", f"prob_{self.prob_str}"
-        )
+        self.KEY = f"BBBC004_{self.prob_str}"
+
         self.image_paths = [
             os.path.join(self.BASE_URL, f"BBBC004_v1_{self.prob_str}_images.zip")
         ]
@@ -57,4 +56,4 @@ class BBBC004(BaseBBBCDataset):
         self.metadata_paths = None
         self.is_3d = False
 
-        super().__init__(f"BBBC004_{self.prob_str}", *args, **kwargs)
+        super().__init__(*args, **kwargs)

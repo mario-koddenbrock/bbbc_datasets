@@ -24,18 +24,17 @@ class BBBC003(BaseBBBCDataset):
     - **Source:** https://bbbc.broadinstitute.org/BBBC003
     """
 
+    def __init__(self, *args, **kwargs):
+        self.KEY = "BBBC003"
+        self.image_paths = [
+            "https://data.broadinstitute.org/bbbc/BBBC003/BBBC003_v1_images.zip"
+        ]
+        self.label_path = (
+            "https://data.broadinstitute.org/bbbc/BBBC003/BBBC003_v1_foreground.zip"
+        )
+        self.metadata_paths = [
+            "https://data.broadinstitute.org/bbbc/BBBC003/BBBC003_v1_counts.txt"
+        ]
+        self.is_3d = False
 
-def __init__(self, *args, **kwargs):
-    self.local_path = os.path.join(self.download_dir, "BBBC003")
-    self.image_paths = [
-        "https://data.broadinstitute.org/bbbc/BBBC003/BBBC003_v1_images.zip"
-    ]
-    self.label_path = (
-        "https://data.broadinstitute.org/bbbc/BBBC003/BBBC003_v1_foreground.zip"
-    )
-    self.metadata_paths = [
-        "https://data.broadinstitute.org/bbbc/BBBC003/BBBC003_v1_counts.txt"
-    ]
-    self.is_3d = False
-
-    super().__init__("BBBC003", *args, **kwargs)
+        super().__init__(*args, **kwargs)

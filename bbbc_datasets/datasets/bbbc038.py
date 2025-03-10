@@ -45,7 +45,7 @@ class BBBC038(BaseBBBCDataset):
         """
 
         self.IMAGE_SUBDIR = "all"
-        self.local_path = os.path.join(self.download_dir, "BBBC038")
+        self.KEY = "BBBC038"
         self.image_paths = [
             "https://github.com/lopuhin/kaggle-dsbowl-2018-dataset-fixes/archive/refs/heads/master.zip"
         ]
@@ -53,7 +53,7 @@ class BBBC038(BaseBBBCDataset):
         self.metadata_paths = None
         self.is_3d = False
 
-        super().__init__("BBBC038", *args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def get_image_paths(self):
         """
