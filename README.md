@@ -14,24 +14,38 @@ It allows users to:
 
 ## 🚀 Installation
 
-### **Clone the Repository**
+<details>
+<summary> Install from PyPI </summary>
+
+```bash
+pip install bbbc-datasets
+```
+
+</details>
+
+<details>
+<summary> Install from Source </summary>
+
+#### Clone the Repository
 
 ```bash
 git clone https://github.com/mario-koddenbrock/bbbc_datasets.git
 cd bbbc_datasets
 ```
 
-### **Install Dependencies**
+#### Install Dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-#### Dependencies:
+##### Dependencies:
 
 - `torch`, `torchvision` (Deep Learning Framework)
 - `numpy`, `tifffile`, `opencv-python` (Image Handling)
 - `requests`, `matplotlib` (Downloading & Visualization)
+
+</details>
 
 ---
 
@@ -43,7 +57,8 @@ You can list all available datasets without downloading them:
 python examples/load_dataset.py
 ```
 
-**Output:**
+<details>
+<summary> Output </summary>
 
 ```
 📂 Available BBBC Datasets:
@@ -66,6 +81,8 @@ python examples/load_dataset.py
 - BBBC046: FiloData3D - Synthetic 3D Time-Lapse Imaging of A549 Cells with Filopodia.
 - BBBC050: Nuclei of Mouse Embryonic Cells.
 ```
+
+</details>
 
 ---
 
@@ -104,21 +121,27 @@ for images, labels in dataloader:
 
 ## 🛠 Running Tests
 
-### **Validate Dataset URLs**
+<details>
+<summary> Validate Dataset URLs </summary>
+
+**Checks if all dataset URLs are reachable** 🌍
 
 ```bash
 python -m unittest tests/test_dataset_urls.py
 ```
 
-- **Checks if all dataset URLs are reachable** 🌍
+</details>
 
-### **Verify Dataset Loading**
+<details>
+<summary> Verify Dataset Loading </summary>
+
+**Ensures datasets can be loaded and accessed correctly** 🛠
 
 ```bash
 python -m unittest tests/test_dataset_loading.py
 ```
 
-- **Ensures datasets can be loaded and accessed correctly** 🛠
+</details>
 
 ---
 
