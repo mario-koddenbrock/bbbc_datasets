@@ -19,7 +19,9 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
-        python-version: '3.x'  # Specify the Python version you need
+        # Pinned: torch~=2.6.0 has no wheels for Python >= 3.13, so the
+        # floating '3.x' alias (now 3.14 on ubuntu-latest) cannot resolve.
+        python-version: '3.11'
 
     - name: Install dependencies
       run: |
