@@ -44,7 +44,7 @@ class BBBC038(BaseBBBCDataset):
 
         """
 
-        self.IMAGE_SUBDIR = "all"
+        self.IMAGE_SUBDIR = "kaggle-dsbowl-2018-dataset-fixes-master"
         self.KEY = "BBBC038"
         self.image_paths = [
             "https://github.com/lopuhin/kaggle-dsbowl-2018-dataset-fixes/archive/refs/heads/master.zip"

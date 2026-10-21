@@ -1,5 +1,6 @@
 import diplib as dip
 import numpy as np
+import tifffile
 from PIL import Image
 
 
@@ -14,11 +15,19 @@ def load_ics_image(image_path):
 def load_image(image_path):
     """
     Loads an image (2D or 3D) and converts it to a displayable format.
-    - If the image is 3D (e.g., TIFF stack), it extracts the middle slice.
-    - If the image is grayscale, it normalizes it for display.
+    - TIFF files are read with tifffile, so multi-frame stacks return the
+      full 3D volume (callers can then extract e.g. the middle slice).
+    - Other formats are read with PIL.
     """
-    if image_path.endswith(".ics") or image_path.endswith(".tiff"):
+    ext = image_path.lower()
+    if ext.endswith(".ics"):
         img = load_ics_image(image_path)
+    elif ext.endswith((".tif", ".tiff")):
+        try:
+            img = tifffile.imread(image_path)
+        except Exception:
+            # Some (older) TIFFs are not fully conformant; PIL is more lenient.
+            img = np.array(Image.open(image_path))
     else:
         img = Image.open(image_path)
 

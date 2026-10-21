@@ -15,7 +15,7 @@ class BaseBBBCDataset:
     Base class for BBBC datasets, handling downloading, extraction, and file management.
 
     - Automatically downloads dataset files if they are not available locally.
-    - Stores datasets in a shared system-wide folder (`/opt/bbbc_datasets/` or `~/.bbbc_datasets/`).
+    - Stores datasets under ``~/.bbbc_datasets/<KEY>/`` (override with ``download_dir``).
     - Supports structured access to images, labels, and metadata.
     """
 
@@ -24,8 +24,10 @@ class BaseBBBCDataset:
     DEFAULT_PATH: str = os.path.expanduser("~/.bbbc_datasets/")
     IMAGE_SUBDIR: str = "images"
     LABEL_SUBDIR: str = "labels"
+    METADATA_SUBDIR: str = "metadata"
+    MARKER_SUBDIR: str = ".downloads"
 
-    IMAGE_FILTER = [".png", ".jpg", ".jpeg", ".tif", ".tiff", ".ics"]
+    IMAGE_FILTER = [".png", ".jpg", ".jpeg", ".tif", ".tiff", ".ics", ".dib"]
 
     local_path: str = None
     label_path = None
@@ -85,16 +87,33 @@ class BaseBBBCDataset:
         elif self.label_path:
             self._download_and_extract("label", self.label_path)
 
+        if isinstance(self.metadata_paths, list):
+            for url in self.metadata_paths:
+                self._download_and_extract("metadata", url)
+        elif self.metadata_paths:
+            self._download_and_extract("metadata", self.metadata_paths)
+
     def _download_and_extract(self, key, url):
         """
         Downloads and extracts a dataset file if it is missing.
+
+        A marker file is written after a successful download+extraction so
+        that datasets with multiple archives (which share one extraction
+        folder) do not skip their remaining files.
         """
         if not url.startswith("http"):
             raise ValueError("url must start with http://")
 
         local_file, unzip_folder = self.get_download_folder(url, key)
+        if not url.endswith(".zip"):
+            # Plain files (e.g. .txt metadata) are stored directly in the
+            # target folder instead of as a temporary download.
+            os.makedirs(unzip_folder, exist_ok=True)
+            local_file = os.path.join(unzip_folder, os.path.basename(url))
 
-        if not os.path.exists(unzip_folder):
+        marker = self._marker_path(url, key)
+
+        if not os.path.exists(marker):
             print(f"Downloading {local_file}...")
             response = requests.get(url, stream=True)
             if response.status_code == 200:
@@ -118,9 +137,23 @@ class BaseBBBCDataset:
                 self._extract_zip(local_file, unzip_folder)
                 os.remove(local_file)  # Delete the zip file after extraction
 
+            os.makedirs(os.path.dirname(marker), exist_ok=True)
+            with open(marker, "w") as f:
+                f.write(url)
+
+    def _marker_path(self, url, key):
+        return os.path.join(
+            self.local_path, self.MARKER_SUBDIR, f"{os.path.basename(url)}_{key}.ok"
+        )
+
     def get_download_folder(self, url, key):
         local_file = os.path.join(self.local_path, os.path.basename(url))
-        folder_name = self.IMAGE_SUBDIR if "image" in key else self.LABEL_SUBDIR
+        if key == "metadata":
+            folder_name = self.METADATA_SUBDIR
+        elif "image" in key:
+            folder_name = self.IMAGE_SUBDIR
+        else:
+            folder_name = self.LABEL_SUBDIR
         unzip_folder = os.path.join(self.local_path, folder_name)
         return local_file, unzip_folder
 
@@ -139,15 +172,24 @@ class BaseBBBCDataset:
         """
 
         dir_path = os.path.join(self.local_path, subdir)
-        files = self._list_files(dir_path=dir_path)
 
-        # recursively search for images in the list of files
         if recursive:
-            for file in files:
-                if os.path.isdir(file):
-                    files.extend(self._list_files(dir_path=file))
+            files = []
+            for root, _, filenames in os.walk(dir_path):
+                if self.MARKER_SUBDIR in root.split(os.sep):
+                    continue
+                for filename in filenames:
+                    files.append(os.path.join(root, filename))
+        else:
+            files = self._list_files(dir_path=dir_path)
 
-        images = [f for f in files if f.lower().endswith(tuple(self.IMAGE_FILTER))]
+        images = [
+            f
+            for f in files
+            if not os.path.basename(f).startswith("._")
+            and "__MACOSX" not in f
+            and f.lower().endswith(tuple(self.IMAGE_FILTER))
+        ]
         return images
 
     def get_image_paths(self):
@@ -189,15 +231,23 @@ class BaseBBBCDataset:
         if not label_paths:
             return None
 
-        # find the label path the most similar to the image path
-        label_path = difflib.get_close_matches(
-            image_path, label_paths, n=1, cutoff=0.25
-        )
-
-        if not label_path:
-            raise FileNotFoundError(f"Label mask not found for {image_path}")
+        # prefer an exact stem match over fuzzy matching
+        image_stem = os.path.splitext(os.path.basename(image_path))[0]
+        exact_matches = [
+            p
+            for p in label_paths
+            if os.path.splitext(os.path.basename(p))[0] == image_stem
+        ]
+        if exact_matches:
+            label_path = exact_matches[0]
         else:
-            label_path = label_path[0]
+            # find the label path the most similar to the image path
+            close_matches = difflib.get_close_matches(
+                image_path, label_paths, n=1, cutoff=0.25
+            )
+            if not close_matches:
+                raise FileNotFoundError(f"Label mask not found for {image_path}")
+            label_path = close_matches[0]
 
         if os.path.exists(label_path):
             return load_image(label_path)
@@ -215,7 +265,7 @@ class BaseBBBCDataset:
         """
         Returns the metadata file paths (if available).
         """
-        dir_path = os.path.join(self.local_path, "metadata")
+        dir_path = os.path.join(self.local_path, self.METADATA_SUBDIR)
         return self._list_files(dir_path=dir_path)
 
     def _list_files(self, dir_path):
