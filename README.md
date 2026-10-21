@@ -1,9 +1,14 @@
-# BBBC Segmentation Datasets (2D/3D) - A PyTorch Dataset Manager
+# BBBC Datasets (2D/3D) - A PyTorch Dataset Manager
 
 ## 📌 Overview
 
 This package provides a **PyTorch-compatible dataset manager** for
 [Broad Bioimage Benchmark Collection (BBBC) datasets](https://bbbc.broadinstitute.org/image_sets).
+
+It covers **27 image sets** — 24 segmentation sets (foreground, outline and
+instance masks) and 3 cell-counting sets (BBBC001, BBBC002, BBBC044). Every
+set carries fixed-schema metadata (`dim`, `imaging_mode`, `task`,
+`label_type`, ...) that you can query and filter on.
 
 It allows users to:
 
