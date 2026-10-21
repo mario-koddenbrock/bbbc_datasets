@@ -5,6 +5,7 @@ import requests
 from tqdm import tqdm
 
 from bbbc_datasets.datasets.base_dataset import BaseBBBCDataset
+from bbbc_datasets.metadata import DatasetMetadata
 from bbbc_datasets.utils.file_io import load_image
 
 
@@ -29,6 +30,24 @@ class BBBC019(BaseBBBCDataset):
 
     - **Source:** https://bbbc.broadinstitute.org/BBBC019
     """
+
+    METADATA = DatasetMetadata(
+        name="BBBC019",
+        title="BBBC019 Dataset: Collective cell migration (wound healing, DIC images).",
+        source="https://bbbc.broadinstitute.org/BBBC019",
+        dim="2D",
+        imaging_mode="dic",
+        modality="grayscale",
+        resolution_um=None,
+        image_size=None,
+        data_type="real",
+        instrument=None,
+        n_images=165,  # n_images is the verified archive count; the BBBC page lists 171,
+        task="segmentation",
+        label_type="foreground",
+        doi="10.1038/nmeth.2083",
+        license="CC-BY-3.0",
+    )
 
     BASE_URL = "https://data.broadinstitute.org/bbbc/BBBC019"
 

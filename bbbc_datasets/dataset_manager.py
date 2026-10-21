@@ -1,3 +1,5 @@
+import os
+
 import cv2
 import numpy as np
 import tifffile as tiff
@@ -6,6 +8,16 @@ from PIL import Image
 from torch.utils.data import Dataset
 
 from tests import DATASETS  # Import shared dataset list
+
+
+def _human_bytes(size):
+    """Formats a byte count as a human readable string."""
+    size = float(size)
+    for unit in ("B", "kB", "MB", "GB", "TB"):
+        if size < 1024 or unit == "TB":
+            return f"{size:,.0f} B" if unit == "B" else f"{size:.1f} {unit}"
+        size /= 1024
+    return f"{size:.1f} TB"
 
 
 class BBBCDataset(Dataset):
@@ -146,18 +158,153 @@ class DatasetManager:
         )
 
     @staticmethod
-    def filter_datasets(filter_3d=None):
+    def get_metadata(name):
         """
-        Filters the datasets based on whether they are 2D, 3D, or both.
-        :param filter_3d: If True, filters only 3D datasets. If False, filters only 2D datasets. If None, includes all datasets.
-        :return: Filtered list of dataset classes.
+        Returns the fixed-schema ``DatasetMetadata`` of a dataset
+        (see ``bbbc_datasets.metadata``) without downloading anything.
+
+        Args:
+            name (str): The dataset class name (e.g., "BBBC019").
+
+        Returns:
+            DatasetMetadata
         """
-        if filter_3d is None:
-            return DATASETS
+        for dataset_cls in DATASETS:
+            if dataset_cls.__name__ == name:
+                return dataset_cls.METADATA
+
+        raise ValueError(
+            f"Dataset {name} not found. Use DatasetManager.list_available_datasets() to see available datasets."
+        )
+
+    @staticmethod
+    def get_dataset_info(name):
+        """
+        Returns metadata about a dataset (declared files, remote sizes,
+        local download state) without downloading anything.
+
+        This uses the default dataset configuration. For a specific
+        variant (e.g. a single BBBC019 subset), construct the class
+        yourself with download_files=False and call
+        ``instance.get_dataset_info()`` instead.
+
+        Args:
+            name (str): The dataset class name (e.g., "BBBC019").
+
+        Returns:
+            dict: See ``BaseBBBCDataset.get_dataset_info()``.
+        """
+        for dataset_cls in DATASETS:
+            if dataset_cls.__name__ == name:
+                return dataset_cls(download_files=False).get_dataset_info()
+
+        raise ValueError(
+            f"Dataset {name} not found. Use DatasetManager.list_available_datasets() to see available datasets."
+        )
+
+    @staticmethod
+    def describe_dataset(name):
+        """
+        Prints a human-readable summary of a dataset without downloading it.
+
+        Shows the description, 2D/3D type, local storage path, download
+        state, every declared file with its size and reachability, and
+        the total download size (when all sizes are known).
+
+        Args:
+            name (str): The dataset class name (e.g., "BBBC044").
+        """
+        info = DatasetManager.get_dataset_info(name)
+
+        state = "downloaded" if info["downloaded"] else "not downloaded"
+        if info["local_size"]:
+            state += f" ({_human_bytes(info['local_size'])} local)"
+
+        meta = info["metadata"]
+        print(f"📋 {info['name']} ({info['key']}) — {info['description']}")
+        print(f"   Type:     {'3D' if info['is_3d'] else '2D'}")
+        print(f"   Mode:     {meta.imaging_mode}, {meta.modality}")
+        print(
+            f"   Content:  {meta.data_type}, {meta.n_images} images, "
+            f"task={meta.task}, labels={meta.label_type or 'none'}"
+        )
+        if meta.instrument:
+            print(f"   Instrument: {meta.instrument}")
+        if meta.doi or meta.license:
+            print(f"   Reference:  {' '.join(x for x in (meta.doi and f'doi:{meta.doi}', meta.license) if x)}")
+        print(f"   Location: {info['local_path']}")
+        print(f"   Status:   {state}")
+        print("   Files:")
+        for file_info in info["files"]:
+            mark = "✓" if file_info["reachable"] else "✗"
+            size = (
+                _human_bytes(file_info["size"])
+                if file_info["size"] is not None
+                else "unknown size"
+            )
+            local = "  (local)" if file_info["local"] else ""
+            print(
+                f"     [{file_info['role']:<8}] "
+                f"{os.path.basename(file_info['url']):<36} "
+                f"{size:>12}  {mark}{local}"
+            )
+        if info["total_remote_size"] is not None:
+            print(f"   Total download: {_human_bytes(info['total_remote_size'])}")
+
+    @staticmethod
+    def gallery(output_dir="gallery", names=None, examples=3, max_size=300, with_labels=True):
+        """
+        Generates downscaled example images for each dataset into
+        ``<output_dir>/<name>/example-<i>.png`` (image side by side
+        with its label mask when available).
+
+        Args:
+            output_dir: Directory to write the thumbnails into.
+            names: Dataset class names (default: all datasets).
+            examples: Number of example images per dataset.
+            max_size: Longest side of each rendered panel in pixels.
+            with_labels: Whether to append the label mask when available.
+
+        Returns:
+            dict mapping dataset name to the saved file paths (empty
+            list when the dataset is not downloaded locally).
+        """
+        from bbbc_datasets.gallery import save_gallery
+
+        return save_gallery(
+            output_dir,
+            names=names,
+            examples=examples,
+            max_size=max_size,
+            with_labels=with_labels,
+        )
+
+    @staticmethod
+    def filter_datasets(filter_3d=None, **metadata_filters):
+        """
+        Filters the datasets by their fixed metadata
+        (see ``bbbc_datasets.metadata.DatasetMetadata``) without
+        instantiating or downloading anything.
+
+        Args:
+            filter_3d: Legacy shorthand — ``True`` keeps 3D datasets,
+                ``False`` keeps 2D ones. Cannot be combined with ``dim``.
+            **metadata_filters: Exact matches on any metadata field,
+                e.g. ``data_type="synthetic"``, ``imaging_mode="dic"``,
+                ``label_type="foreground"``, ``task="counting"``.
+                Unknown field names raise ValueError.
+
+        Returns:
+            Filtered list of dataset classes.
+        """
+        if filter_3d is not None:
+            if "dim" in metadata_filters:
+                raise ValueError("Use either filter_3d or dim=, not both")
+            metadata_filters["dim"] = "3D" if filter_3d else "2D"
         return [
             dataset_cls
             for dataset_cls in DATASETS
-            if dataset_cls(download_files=False).is_3d == filter_3d
+            if dataset_cls.METADATA.matches(**metadata_filters)
         ]
 
 

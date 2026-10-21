@@ -1,6 +1,7 @@
 import os
 
 from bbbc_datasets.datasets.base_dataset import BaseBBBCDataset
+from bbbc_datasets.metadata import DatasetMetadata
 
 
 class BBBC006(BaseBBBCDataset):
@@ -25,6 +26,24 @@ class BBBC006(BaseBBBCDataset):
 
     - **Source:** https://bbbc.broadinstitute.org/BBBC006
     """
+
+    METADATA = DatasetMetadata(
+        name="BBBC006",
+        title="BBBC006 Dataset: Z-stack fluorescence microscopy images of human U2OS cells.",
+        source="https://bbbc.broadinstitute.org/BBBC006",
+        dim="2D",
+        imaging_mode="fluorescence",
+        modality="grayscale",
+        resolution_um=None,
+        image_size=None,
+        data_type="real",
+        instrument=None,
+        n_images=1536,  # 2D slices provided by the package; the catalog counts all z-slices (52,224)
+        task="segmentation",
+        label_type="foreground",
+        doi=None,
+        license=None,
+    )
 
     BASE_URL = "https://data.broadinstitute.org/bbbc/BBBC006"
 

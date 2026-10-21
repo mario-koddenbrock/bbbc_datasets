@@ -1,6 +1,7 @@
 import os
 
 from bbbc_datasets.datasets.base_dataset import BaseBBBCDataset
+from bbbc_datasets.metadata import DatasetMetadata
 
 
 class BBBC027(BaseBBBCDataset):
@@ -21,6 +22,24 @@ class BBBC027(BaseBBBCDataset):
 
     - **Source:** https://bbbc.broadinstitute.org/BBBC027
     """
+
+    METADATA = DatasetMetadata(
+        name="BBBC027",
+        title="BBBC027 Dataset: 3D Synthetic Colon Tissue Images with Varying SNR.",
+        source="https://bbbc.broadinstitute.org/BBBC027",
+        dim="3D",
+        imaging_mode="fluorescence",
+        modality="grayscale",
+        resolution_um=None,
+        image_size=None,
+        data_type="synthetic",
+        instrument=None,
+        n_images=30,  # default SNR (high); the full set has 60
+        task="segmentation",
+        label_type="foreground",
+        doi=None,
+        license=None,
+    )
 
     BASE_URL = "https://data.broadinstitute.org/bbbc/BBBC027"
 

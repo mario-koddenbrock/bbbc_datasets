@@ -1,6 +1,7 @@
 import os
 
 from bbbc_datasets.datasets.base_dataset import BaseBBBCDataset
+from bbbc_datasets.metadata import DatasetMetadata
 
 
 class BBBC024(BaseBBBCDataset):
@@ -22,6 +23,24 @@ class BBBC024(BaseBBBCDataset):
 
     - **Source:** https://bbbc.broadinstitute.org/BBBC024
     """
+
+    METADATA = DatasetMetadata(
+        name="BBBC024",
+        title="BBBC024 Dataset: 3D Synthetic HL60 Cell Line Images with Varying Clustering Probability and SNR.",
+        source="https://bbbc.broadinstitute.org/BBBC024",
+        dim="3D",
+        imaging_mode="fluorescence",
+        modality="grayscale",
+        resolution_um=None,
+        image_size=None,
+        data_type="synthetic",
+        instrument=None,
+        n_images=90,  # default variant (clustering 0, high SNR); the full set has 240
+        task="segmentation",
+        label_type="foreground",
+        doi=None,
+        license=None,
+    )
 
     BASE_URL = "https://data.broadinstitute.org/bbbc/BBBC024"
 

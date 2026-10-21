@@ -1,12 +1,31 @@
 import os
 
 from bbbc_datasets.datasets.base_dataset import BaseBBBCDataset
+from bbbc_datasets.metadata import DatasetMetadata
 
 
 class LiveCell(BaseBBBCDataset):
     """
     LiveCell Dataset: TODO
     """
+
+    METADATA = DatasetMetadata(
+        name="LiveCell",
+        title="LiveCell dataset",
+        source="https://www.kaggle.com/datasets/markunys/livecell-dataset",
+        dim="2D",
+        imaging_mode="fluorescence",
+        modality="grayscale",
+        resolution_um=None,
+        image_size=None,
+        data_type="real",
+        instrument=None,
+        n_images=None,
+        task="segmentation",
+        label_type="bounding_boxes",
+        doi=None,
+        license=None,
+    )
 
     def __init__(self, *args, **kwargs):
 

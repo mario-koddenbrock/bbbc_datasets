@@ -3,6 +3,7 @@ import os
 import numpy as np
 
 from bbbc_datasets.datasets.base_dataset import BaseBBBCDataset
+from bbbc_datasets.metadata import DatasetMetadata
 from bbbc_datasets.utils.file_io import load_image
 
 
@@ -35,6 +36,24 @@ class BBBC038(BaseBBBCDataset):
 
     - **Source:** https://bbbc.broadinstitute.org/BBBC038
     """
+
+    METADATA = DatasetMetadata(
+        name="BBBC038",
+        title="BBBC038 Dataset: Kaggle 2018 Data Science Bowl - Nuclei Segmentation.",
+        source="https://bbbc.broadinstitute.org/BBBC038",
+        dim="2D",
+        imaging_mode="fluorescence",
+        modality="grayscale",
+        resolution_um=None,
+        image_size=None,
+        data_type="real",
+        instrument=None,
+        n_images=664,  # verified archive count; the catalog lists 670
+        task="segmentation",
+        label_type="foreground",
+        doi=None,
+        license=None,
+    )
 
     BASE_URL = "https://data.broadinstitute.org/bbbc/BBBC038"
 

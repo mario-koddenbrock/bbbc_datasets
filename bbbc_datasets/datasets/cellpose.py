@@ -1,12 +1,31 @@
 import os
 
 from bbbc_datasets.datasets.base_dataset import BaseBBBCDataset
+from bbbc_datasets.metadata import DatasetMetadata
 
 
 class Cellpose(BaseBBBCDataset):
     """
     Cellpose Dataset: TODO
     """
+
+    METADATA = DatasetMetadata(
+        name="Cellpose",
+        title="Cellpose dataset",
+        source="https://www.cellpose.org",
+        dim="2D",
+        imaging_mode="fluorescence",
+        modality="grayscale",
+        resolution_um=None,
+        image_size=None,
+        data_type="real",
+        instrument=None,
+        n_images=None,
+        task="segmentation",
+        label_type="instance",
+        doi=None,
+        license=None,
+    )
 
     def __init__(self, *args, **kwargs):
         self.KEY = "Cellpose"

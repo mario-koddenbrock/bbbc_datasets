@@ -1,6 +1,7 @@
 import os
 
 from bbbc_datasets.datasets.base_dataset import BaseBBBCDataset
+from bbbc_datasets.metadata import DatasetMetadata
 
 
 class BBBC035(BaseBBBCDataset):
@@ -27,6 +28,24 @@ class BBBC035(BaseBBBCDataset):
 
     - **Source:** https://bbbc.broadinstitute.org/BBBC035
     """
+
+    METADATA = DatasetMetadata(
+        name="BBBC035",
+        title="BBBC035 Dataset: Simulated HL60 Cells from the Cell Tracking Challenge.",
+        source="https://bbbc.broadinstitute.org/BBBC035",
+        dim="2D",
+        imaging_mode="fluorescence",
+        modality="grayscale",
+        resolution_um=None,
+        image_size=None,
+        data_type="synthetic",
+        instrument=None,
+        n_images=230,
+        task="segmentation",
+        label_type="foreground",
+        doi=None,
+        license=None,
+    )
 
     BASE_URL = "https://data.broadinstitute.org/bbbc/BBBC035"
 

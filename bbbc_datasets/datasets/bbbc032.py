@@ -1,6 +1,7 @@
 import os
 
 from bbbc_datasets.datasets.base_dataset import BaseBBBCDataset
+from bbbc_datasets.metadata import DatasetMetadata
 
 
 class BBBC032(BaseBBBCDataset):
@@ -29,6 +30,24 @@ class BBBC032(BaseBBBCDataset):
 
     - **Source:** https://bbbc.broadinstitute.org/BBBC032
     """
+
+    METADATA = DatasetMetadata(
+        name="BBBC032",
+        title="BBBC032 Dataset: 3D Mouse Embryo Blastocyst Cells.",
+        source="https://bbbc.broadinstitute.org/BBBC032",
+        dim="2D",
+        imaging_mode="fluorescence",
+        modality="grayscale",
+        resolution_um=None,
+        image_size=None,
+        data_type="real",
+        instrument=None,
+        n_images=4,
+        task="segmentation",
+        label_type="foreground",
+        doi=None,
+        license=None,
+    )
 
     BASE_URL = "https://data.broadinstitute.org/bbbc/BBBC032"
 

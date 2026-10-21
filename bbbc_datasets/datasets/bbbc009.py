@@ -1,6 +1,7 @@
 import os
 
 from bbbc_datasets.datasets.base_dataset import BaseBBBCDataset
+from bbbc_datasets.metadata import DatasetMetadata
 
 
 class BBBC009(BaseBBBCDataset):
@@ -20,6 +21,24 @@ class BBBC009(BaseBBBCDataset):
 
     - **Source:** https://bbbc.broadinstitute.org/BBBC009
     """
+
+    METADATA = DatasetMetadata(
+        name="BBBC009",
+        title="BBBC009 Dataset: Human red blood cells (DIC images).",
+        source="https://bbbc.broadinstitute.org/BBBC009",
+        dim="2D",
+        imaging_mode="dic",
+        modality="grayscale",
+        resolution_um=None,
+        image_size=(600, 800),
+        data_type="real",
+        instrument=None,
+        n_images=5,
+        task="segmentation",
+        label_type="outlines",
+        doi="10.1038/nmeth.2083",
+        license="CC0-1.0",
+    )
 
     BASE_URL = "https://data.broadinstitute.org/bbbc/BBBC009"
 

@@ -1,6 +1,7 @@
 import os
 
 from bbbc_datasets.datasets.base_dataset import BaseBBBCDataset
+from bbbc_datasets.metadata import DatasetMetadata
 
 
 class BBBC004(BaseBBBCDataset):
@@ -22,6 +23,24 @@ class BBBC004(BaseBBBCDataset):
 
     - **Source:** https://bbbc.broadinstitute.org/BBBC004
     """
+
+    METADATA = DatasetMetadata(
+        name="BBBC004",
+        title="BBBC004 Dataset: Synthetic fluorescence microscopy images of nuclei with varying clustering probabilities.",
+        source="https://bbbc.broadinstitute.org/BBBC004",
+        dim="2D",
+        imaging_mode="fluorescence",
+        modality="grayscale",
+        resolution_um=None,
+        image_size=None,
+        data_type="synthetic",
+        instrument=None,
+        n_images=20,  # default subset (overlap 0.00); the full set has 100
+        task="segmentation",
+        label_type="foreground",
+        doi=None,
+        license=None,
+    )
 
     BASE_URL = "https://data.broadinstitute.org/bbbc/BBBC004"
 

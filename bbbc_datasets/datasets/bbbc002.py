@@ -1,6 +1,7 @@
 import os
 
 from bbbc_datasets.datasets.base_dataset import BaseBBBCDataset
+from bbbc_datasets.metadata import DatasetMetadata
 
 
 class BBBC002(BaseBBBCDataset):
@@ -21,6 +22,24 @@ class BBBC002(BaseBBBCDataset):
 
     - **Source:** https://bbbc.broadinstitute.org/BBBC002
     """
+
+    METADATA = DatasetMetadata(
+        name="BBBC002",
+        title="BBBC002 Dataset: Drosophila Kc167 cells for counting.",
+        source="https://bbbc.broadinstitute.org/BBBC002",
+        dim="2D",
+        imaging_mode="fluorescence",
+        modality="grayscale",
+        resolution_um=None,
+        image_size=(512, 512),
+        data_type="real",
+        instrument="Zeiss Axiovert 200M",
+        n_images=50,
+        task="counting",
+        label_type="counts",
+        doi="10.1038/nmeth.2083",
+        license="CC-BY-NC-SA-3.0",
+    )
 
     BASE_URL = "https://data.broadinstitute.org/bbbc/BBBC002"
 

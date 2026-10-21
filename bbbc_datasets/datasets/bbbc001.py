@@ -1,6 +1,7 @@
 import os
 
 from bbbc_datasets.datasets.base_dataset import BaseBBBCDataset
+from bbbc_datasets.metadata import DatasetMetadata
 
 
 class BBBC001(BaseBBBCDataset):
@@ -22,6 +23,24 @@ class BBBC001(BaseBBBCDataset):
 
     - **Source:** https://bbbc.broadinstitute.org/BBBC001
     """
+
+    METADATA = DatasetMetadata(
+        name="BBBC001",
+        title="BBBC001 Dataset: Human HT29 colon-cancer cells for counting.",
+        source="https://bbbc.broadinstitute.org/BBBC001",
+        dim="2D",
+        imaging_mode="fluorescence",
+        modality="grayscale",
+        resolution_um=None,
+        image_size=(512, 512),
+        data_type="real",
+        instrument="Cellomics ArrayScan",
+        n_images=6,
+        task="counting",
+        label_type="counts",
+        doi="10.1038/nmeth.2083",
+        license="CC-BY-NC-SA-3.0",
+    )
 
     BASE_URL = "https://data.broadinstitute.org/bbbc/BBBC001"
 

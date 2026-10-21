@@ -3,6 +3,7 @@ import os
 import numpy as np
 
 from bbbc_datasets.datasets.base_dataset import BaseBBBCDataset
+from bbbc_datasets.metadata import DatasetMetadata
 from bbbc_datasets.utils.file_io import load_image
 
 
@@ -32,6 +33,24 @@ class BBBC020(BaseBBBCDataset):
 
     - **Source:** https://bbbc.broadinstitute.org/BBBC020
     """
+
+    METADATA = DatasetMetadata(
+        name="BBBC020",
+        title="BBBC020 Dataset: Murine bone-marrow derived macrophages (overlapping cells).",
+        source="https://bbbc.broadinstitute.org/BBBC020",
+        dim="2D",
+        imaging_mode="fluorescence",
+        modality="multichannel",
+        resolution_um=None,
+        image_size=(1040, 1388),
+        data_type="real",
+        instrument=None,
+        n_images=75,
+        task="segmentation",
+        label_type="instance",
+        doi="10.1038/nmeth.2083",
+        license="CC-BY-NC-SA-3.0",
+    )
 
     BASE_URL = "https://data.broadinstitute.org/bbbc/BBBC020"
 

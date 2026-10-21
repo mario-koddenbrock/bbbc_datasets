@@ -7,6 +7,7 @@ import pandas as pd
 import requests
 from tqdm import tqdm
 
+from bbbc_datasets.metadata import DatasetMetadata
 from bbbc_datasets.utils.file_io import load_image
 
 
@@ -36,6 +37,10 @@ class BaseBBBCDataset:
 
     is_3d: bool = False
 
+    # Fixed metadata describing this dataset (see bbbc_datasets.metadata).
+    # Every dataset class must define this.
+    METADATA: "DatasetMetadata" = None
+
     def __init__(self, download_dir=None, download_files=True):
         """
         Initialize the dataset with name and file paths.
@@ -45,6 +50,14 @@ class BaseBBBCDataset:
 
         if not self.KEY:
             raise ValueError("KEY not defined")
+
+        if self.METADATA is None:
+            raise ValueError(f"{type(self).__name__}: METADATA not defined")
+        if self.METADATA.is_3d != self.is_3d:
+            raise ValueError(
+                f"{type(self).__name__}: METADATA.dim={self.METADATA.dim!r} "
+                f"contradicts is_3d={self.is_3d!r}"
+            )
 
         self.ground_truth = None
 
@@ -276,6 +289,97 @@ class BaseBBBCDataset:
         if os.path.exists(dir_path):
             return [os.path.join(dir_path, f) for f in os.listdir(dir_path)]
         return []
+
+    # marker keys used by _download_and_extract / _marker_path
+    _ROLE_MARKER_KEY = {"images": "image", "labels": "label", "metadata": "metadata"}
+
+    def _collect_urls(self):
+        """
+        Returns the declared download URLs as (role, url) pairs.
+        """
+        urls = []
+        for role, attr in (
+            ("images", self.image_paths),
+            ("labels", self.label_path),
+            ("metadata", self.metadata_paths),
+        ):
+            if isinstance(attr, list):
+                urls.extend((role, u) for u in attr if u)
+            elif attr:
+                urls.append((role, attr))
+        return urls
+
+    def _url_info(self, url):
+        """
+        Returns reachability and the remote size in bytes for a URL,
+        without downloading the file body.
+
+        The size is taken from the Content-Length header of a HEAD
+        request; if the server omits it, a single-byte Range request is
+        used and the total is read from Content-Range. Servers that
+        provide neither (e.g. GitHub archive URLs) report size None.
+        """
+        info = {"url": url, "reachable": False, "size": None}
+        try:
+            response = requests.head(url, allow_redirects=True, timeout=10)
+            if response.status_code != 200:
+                return info
+            info["reachable"] = True
+            content_length = response.headers.get("content-length")
+            if content_length:
+                info["size"] = int(content_length)
+            else:
+                probe = requests.get(
+                    url, headers={"Range": "bytes=0-0"}, stream=True, timeout=10
+                )
+                content_range = probe.headers.get("content-range", "")
+                probe.close()
+                if "/" in content_range:
+                    info["size"] = int(content_range.rsplit("/", 1)[1])
+        except requests.RequestException:
+            pass
+        return info
+
+    def get_dataset_info(self):
+        """
+        Returns metadata about this dataset without downloading any files.
+
+        The result contains the description, the 2D/3D flag, every
+        declared file with its role, reachability and remote size, and
+        the local download state (based on the download markers).
+        """
+        files = []
+        for role, url in self._collect_urls():
+            info = self._url_info(url)
+            info["role"] = role
+            info["local"] = os.path.exists(
+                self._marker_path(url, self._ROLE_MARKER_KEY[role])
+            )
+            files.append(info)
+
+        local_size = 0
+        if os.path.isdir(self.local_path):
+            for root, _, filenames in os.walk(self.local_path):
+                for filename in filenames:
+                    try:
+                        local_size += os.path.getsize(os.path.join(root, filename))
+                    except OSError:
+                        pass
+
+        sizes = [f["size"] for f in files]
+        doc_lines = (self.__doc__ or "").splitlines()
+        return {
+            "name": type(self).__name__,
+            "key": self.KEY,
+            "metadata": self.METADATA,
+            "description": doc_lines[1].strip() if len(doc_lines) > 1 else "",
+            "is_3d": self.is_3d,
+            "local_path": self.local_path,
+            "downloaded": bool(files) and all(f["local"] for f in files),
+            "local_size": local_size,
+            "files": files,
+            "total_remote_size": sum(sizes) if all(s is not None for s in sizes) else None,
+        }
 
     @staticmethod
     def validate_url(url):

@@ -1,6 +1,7 @@
 import os
 
 from bbbc_datasets.datasets.base_dataset import BaseBBBCDataset
+from bbbc_datasets.metadata import DatasetMetadata
 
 
 class BBBC030(BaseBBBCDataset):
@@ -21,6 +22,24 @@ class BBBC030(BaseBBBCDataset):
 
     - **Source:** https://bbbc.broadinstitute.org/BBBC030
     """
+
+    METADATA = DatasetMetadata(
+        name="BBBC030",
+        title="BBBC030 Dataset: Chinese Hamster Ovary (CHO) cells (DIC images).",
+        source="https://bbbc.broadinstitute.org/BBBC030",
+        dim="2D",
+        imaging_mode="dic",
+        modality="grayscale",
+        resolution_um=None,
+        image_size=(1032, 1376),
+        data_type="real",
+        instrument="Olympus Cell-R (20x)",
+        n_images=60,
+        task="segmentation",
+        label_type="outlines",
+        doi=None,
+        license="CC-BY-3.0",
+    )
 
     BASE_URL = "https://data.broadinstitute.org/bbbc/BBBC030"
 

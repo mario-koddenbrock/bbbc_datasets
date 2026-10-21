@@ -1,6 +1,7 @@
 import os
 
 from bbbc_datasets.datasets.base_dataset import BaseBBBCDataset
+from bbbc_datasets.metadata import DatasetMetadata
 
 
 class BBBC008(BaseBBBCDataset):
@@ -22,6 +23,24 @@ class BBBC008(BaseBBBCDataset):
 
     - **Source:** https://bbbc.broadinstitute.org/BBBC008
     """
+
+    METADATA = DatasetMetadata(
+        name="BBBC008",
+        title="BBBC008 Dataset: Fluorescence microscopy images of human HT29 colon cancer cells.",
+        source="https://bbbc.broadinstitute.org/BBBC008",
+        dim="2D",
+        imaging_mode="fluorescence",
+        modality="grayscale",
+        resolution_um=None,
+        image_size=None,
+        data_type="real",
+        instrument=None,
+        n_images=24,
+        task="segmentation",
+        label_type="foreground",
+        doi=None,
+        license=None,
+    )
 
     BASE_URL = "https://data.broadinstitute.org/bbbc/BBBC008"
 

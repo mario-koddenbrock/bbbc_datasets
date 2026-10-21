@@ -1,6 +1,7 @@
 import os
 
 from bbbc_datasets.datasets.base_dataset import BaseBBBCDataset
+from bbbc_datasets.metadata import DatasetMetadata
 
 
 class BBBC034(BaseBBBCDataset):
@@ -35,6 +36,24 @@ class BBBC034(BaseBBBCDataset):
 
     - **Source:** https://bbbc.broadinstitute.org/BBBC034
     """
+
+    METADATA = DatasetMetadata(
+        name="BBBC034",
+        title="BBBC034 Dataset: 3D Induced Pluripotent Human Stem Cells (hiPSC).",
+        source="https://bbbc.broadinstitute.org/BBBC034",
+        dim="2D",
+        imaging_mode="brightfield_fluorescence",
+        modality="grayscale",
+        resolution_um=None,
+        image_size=None,
+        data_type="real",
+        instrument=None,
+        n_images=10,  # verified count; the catalog lists 9
+        task="segmentation",
+        label_type="foreground",
+        doi=None,
+        license=None,
+    )
 
     BASE_URL = "https://data.broadinstitute.org/bbbc/BBBC034"
 

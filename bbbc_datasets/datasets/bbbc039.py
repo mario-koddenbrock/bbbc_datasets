@@ -1,6 +1,7 @@
 import os
 
 from bbbc_datasets.datasets.base_dataset import BaseBBBCDataset
+from bbbc_datasets.metadata import DatasetMetadata
 
 
 class BBBC039(BaseBBBCDataset):
@@ -28,6 +29,24 @@ class BBBC039(BaseBBBCDataset):
 
     - **Source:** https://bbbc.broadinstitute.org/BBBC039
     """
+
+    METADATA = DatasetMetadata(
+        name="BBBC039",
+        title="BBBC039 Dataset: Nuclei of U2OS Cells in a Chemical Screen.",
+        source="https://bbbc.broadinstitute.org/BBBC039",
+        dim="2D",
+        imaging_mode="fluorescence",
+        modality="grayscale",
+        resolution_um=None,
+        image_size=(520, 696),
+        data_type="real",
+        instrument=None,
+        n_images=200,
+        task="segmentation",
+        label_type="instance",
+        doi=None,
+        license=None,
+    )
 
     BASE_URL = "https://data.broadinstitute.org/bbbc/BBBC039"
 

@@ -1,6 +1,7 @@
 import os
 
 from bbbc_datasets.datasets.base_dataset import BaseBBBCDataset
+from bbbc_datasets.metadata import DatasetMetadata
 from bbbc_datasets.utils.file_io import load_image
 
 
@@ -26,6 +27,24 @@ class BBBC044(BaseBBBCDataset):
 
     - **Source:** https://bbbc.broadinstitute.org/BBBC044
     """
+
+    METADATA = DatasetMetadata(
+        name="BBBC044",
+        title="BBBC044 Dataset: Mouse hippocampal presynaptic terminals (vGlut-1 and vGat).",
+        source="https://bbbc.broadinstitute.org/BBBC044",
+        dim="3D",
+        imaging_mode="fluorescence",
+        modality="grayscale",
+        resolution_um=None,
+        image_size=(15, 1024, 1024),
+        data_type="real",
+        instrument="Zeiss LSM 710 (63x oil)",
+        n_images=12,
+        task="counting",
+        label_type=None,
+        doi="10.3389/fnana.2018.00037",
+        license="CC-BY-NC-SA-3.0",
+    )
 
     BASE_URL = "https://data.broadinstitute.org/bbbc/BBBC044"
 

@@ -1,6 +1,7 @@
 import os
 
 from bbbc_datasets.datasets.base_dataset import BaseBBBCDataset
+from bbbc_datasets.metadata import DatasetMetadata
 
 
 class BBBC003(BaseBBBCDataset):
@@ -23,6 +24,24 @@ class BBBC003(BaseBBBCDataset):
 
     - **Source:** https://bbbc.broadinstitute.org/BBBC003
     """
+
+    METADATA = DatasetMetadata(
+        name="BBBC003",
+        title="BBBC003 Dataset: DIC microscopy images of mouse embryos for segmentation analysis.",
+        source="https://bbbc.broadinstitute.org/BBBC003",
+        dim="2D",
+        imaging_mode="dic",
+        modality="grayscale",
+        resolution_um=None,
+        image_size=(480, 640),
+        data_type="real",
+        instrument="Nikon Eclipse TE200 (20x, 0.45 NA)",
+        n_images=15,
+        task="segmentation",
+        label_type="foreground",
+        doi=None,
+        license=None,
+    )
 
     def __init__(self, *args, **kwargs):
         self.KEY = "BBBC003"

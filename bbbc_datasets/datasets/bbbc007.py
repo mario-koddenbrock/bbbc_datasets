@@ -1,6 +1,7 @@
 import os
 
 from bbbc_datasets.datasets.base_dataset import BaseBBBCDataset
+from bbbc_datasets.metadata import DatasetMetadata
 
 
 class BBBC007(BaseBBBCDataset):
@@ -23,6 +24,24 @@ class BBBC007(BaseBBBCDataset):
 
     - **Source:** https://bbbc.broadinstitute.org/BBBC007
     """
+
+    METADATA = DatasetMetadata(
+        name="BBBC007",
+        title="BBBC007 Dataset: Drosophila Kc167 cells for cell boundary segmentation.",
+        source="https://bbbc.broadinstitute.org/BBBC007",
+        dim="2D",
+        imaging_mode="fluorescence",
+        modality="grayscale",
+        resolution_um=None,
+        image_size=(512, 512),
+        data_type="real",
+        instrument="Zeiss Axioplan 2",
+        n_images=32,
+        task="segmentation",
+        label_type="outlines",
+        doi="10.1038/nmeth.2083",
+        license="CC0-1.0",
+    )
 
     BASE_URL = "https://data.broadinstitute.org/bbbc/BBBC007"
 

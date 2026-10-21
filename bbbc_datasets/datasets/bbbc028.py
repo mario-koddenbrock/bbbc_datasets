@@ -1,6 +1,7 @@
 import os
 
 from bbbc_datasets.datasets.base_dataset import BaseBBBCDataset
+from bbbc_datasets.metadata import DatasetMetadata
 
 
 class BBBC028(BaseBBBCDataset):
@@ -21,6 +22,24 @@ class BBBC028(BaseBBBCDataset):
 
     - **Source:** https://bbbc.broadinstitute.org/BBBC028
     """
+
+    METADATA = DatasetMetadata(
+        name="BBBC028",
+        title="BBBC028 Dataset: Polymerized Structures in Differential Interference Contrast (DIC) Microscopy.",
+        source="https://bbbc.broadinstitute.org/BBBC028",
+        dim="2D",
+        imaging_mode="dic",
+        modality="grayscale",
+        resolution_um=None,
+        image_size=None,
+        data_type="real",
+        instrument=None,
+        n_images=60,
+        task="segmentation",
+        label_type="foreground",
+        doi=None,
+        license=None,
+    )
 
     BASE_URL = "https://data.broadinstitute.org/bbbc/BBBC028"
 

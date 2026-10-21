@@ -1,6 +1,7 @@
 import os
 
 from bbbc_datasets.datasets.base_dataset import BaseBBBCDataset
+from bbbc_datasets.metadata import DatasetMetadata
 
 
 class BBBC029(BaseBBBCDataset):
@@ -22,6 +23,24 @@ class BBBC029(BaseBBBCDataset):
 
     - **Source:** https://bbbc.broadinstitute.org/BBBC029
     """
+
+    METADATA = DatasetMetadata(
+        name="BBBC029",
+        title="BBBC029 Dataset: Synthetic Differential Interference Contrast (DIC) Images.",
+        source="https://bbbc.broadinstitute.org/BBBC029",
+        dim="2D",
+        imaging_mode="dic",
+        modality="grayscale",
+        resolution_um=None,
+        image_size=None,
+        data_type="synthetic",
+        instrument=None,
+        n_images=218,
+        task="segmentation",
+        label_type="foreground",
+        doi=None,
+        license=None,
+    )
 
     BASE_URL = "https://data.broadinstitute.org/bbbc/BBBC029"
 
