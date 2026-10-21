@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 import tifffile as tiff
 import torch
+from PIL import Image
 from torch.utils.data import Dataset
 
 from tests import DATASETS  # Import shared dataset list
@@ -24,7 +25,7 @@ class BBBCDataset(Dataset):
     def __init__(self, dataset_cls, transform=None, target_transform=None):
         self.dataset = dataset_cls()
         self.image_paths = self.dataset.get_image_paths()
-        self.label_path = self.dataset.get_label_paths()
+        self.label_paths = self.dataset.get_label_paths()
 
         if not self.image_paths:
             raise RuntimeError(f"No images found in {dataset_cls.__name__}")
@@ -40,8 +41,9 @@ class BBBCDataset(Dataset):
         image = self.load_image(image_path)
 
         label = None
-        if self.label_path:
-            label = self.load_image(self.label_path)
+        label_array = self.dataset.get_label(image_path)
+        if label_array is not None:
+            label = self.array_to_tensor(np.asarray(label_array))
 
         # Apply transforms if provided
         if self.transform:
@@ -55,22 +57,47 @@ class BBBCDataset(Dataset):
         """
         Loads an image (2D or full 3D) and converts it to a PyTorch tensor.
         """
-        if image_path.endswith((".tif", ".tiff")):
-            img = tiff.imread(image_path)  # Load 3D TIFF or 2D image
+        ext = image_path.lower()
+        if ext.endswith((".tif", ".tiff")):
+            try:
+                img = tiff.imread(image_path)  # Load 3D TIFF or 2D image
+            except Exception:
+                # Some (older) TIFFs are not fully conformant; PIL is more lenient.
+                img = np.array(Image.open(image_path))
+        elif ext.endswith(".dib"):
+            img = np.array(Image.open(image_path))  # ArrayScan DIB (BMP)
         else:
             img = cv2.imread(image_path, cv2.IMREAD_UNCHANGED)  # Load 2D image
 
         if img is None:
             raise ValueError(f"Error: Could not read image {image_path}")
 
-        # Normalize grayscale images
+        return self.array_to_tensor(img)
+
+    @staticmethod
+    def array_to_tensor(img):
+        """
+        Normalizes a 2D/3D/RGB numpy array to [0, 1] and converts it to a tensor.
+        """
+        # Convert to float first (also handles 1-bit/bool masks)
+        img = np.asarray(img).astype(np.float32)
+
+        # Normalize to [0, 1]
         img = (img - np.min(img)) / (np.max(img) - np.min(img) + 1e-8)
 
         # Convert to tensor
         if len(img.shape) == 2:  # 2D grayscale image
             img = torch.tensor(img, dtype=torch.float32).unsqueeze(0)  # (C, H, W)
-        elif len(img.shape) == 3:  # 3D volume (Z, H, W)
-            img = torch.tensor(img, dtype=torch.float32).unsqueeze(0)  # (C, Z, H, W)
+        elif len(img.shape) == 3:
+            if img.shape[2] in (3, 4):  # (H, W, C) color image
+                img = torch.tensor(img, dtype=torch.float32).permute(2, 0, 1)  # (C, H, W)
+            else:  # 3D volume (Z, H, W)
+                img = torch.tensor(img, dtype=torch.float32).unsqueeze(0)  # (C, Z, H, W)
+        elif len(img.shape) == 4:
+            if img.shape[3] in (3, 4):  # (Z, H, W, C) color volume
+                img = torch.tensor(img, dtype=torch.float32).permute(3, 0, 1, 2)  # (C, Z, H, W)
+            else:  # (C, Z, H, W) channel-first volume
+                img = torch.tensor(img, dtype=torch.float32)
 
         return img
 
@@ -128,7 +155,9 @@ class DatasetManager:
         if filter_3d is None:
             return DATASETS
         return [
-            dataset_cls for dataset_cls in DATASETS if dataset_cls().is_3d == filter_3d
+            dataset_cls
+            for dataset_cls in DATASETS
+            if dataset_cls(download_files=False).is_3d == filter_3d
         ]
 
 

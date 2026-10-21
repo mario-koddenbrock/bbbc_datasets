@@ -37,5 +37,6 @@ class BBBC039(BaseBBBCDataset):
         self.label_path = os.path.join(self.BASE_URL, "masks.zip")
         self.metadata_paths = [os.path.join(self.BASE_URL, "metadata.zip")]
         self.is_3d = False
-        # TODO what is the 3rd dimension of the masks?
+        # The masks are RGBA PNGs: R/G/B encode the per-instance color, the
+        # fourth (alpha) channel carries no additional label information.
         super().__init__(*args, **kwargs)

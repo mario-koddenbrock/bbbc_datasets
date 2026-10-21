@@ -26,10 +26,11 @@ class TestDatasetLoading(unittest.TestCase):
 
                 # If the dataset has segmentation, ensure it exists
                 if label_path:
-                    self.assertTrue(
-                        os.path.exists(label_path),
-                        msg=f"Segmentation file missing for {dataset_cls.__name__}",
-                    )
+                    for path in label_path:
+                        self.assertTrue(
+                            os.path.exists(path),
+                            msg=f"Segmentation file missing for {dataset_cls.__name__}: {path}",
+                        )
 
                 # If metadata is expected, ensure it exists
                 for meta_path in metadata_paths:
