@@ -72,22 +72,31 @@ list_available_datasets(filter_3d=True)
 
 ```
 📂 Available BBBC Datasets:
+- BBBC001: Human HT29 colon-cancer cells for counting.
+- BBBC002: Drosophila Kc167 cells for counting.
 - BBBC003: DIC microscopy images of mouse embryos for segmentation analysis.
 - BBBC004: Synthetic fluorescence microscopy images of nuclei with varying clustering probabilities.
 - BBBC005: Simulated fluorescence microscopy images with varying focus blur.
 - BBBC006: Z-stack fluorescence microscopy images of human U2OS cells.
+- BBBC007: Drosophila Kc167 cells for cell boundary segmentation.
 - BBBC008: Dataset: Fluorescence microscopy images of human HT29 colon cancer cells.
+- BBBC009: Human red blood cells (DIC images).
 - BBBC010: Live/dead assay of C. elegans exposed to pathogens.
+- BBBC018: Human HT29 colon-cancer cells (diverse phenotypes).
+- BBBC019: Collective cell migration (wound healing, DIC images).
+- BBBC020: Murine bone-marrow derived macrophages (overlapping cells).
 - BBBC024: 3D Synthetic HL60 Cell Line Images with Varying Clustering Probability and SNR.
 - BBBC027: 3D Synthetic Colon Tissue Images with Varying SNR.
 - BBBC028: Polymerized Structures in Differential Interference Contrast (DIC) Microscopy.
 - BBBC029: Synthetic Differential Interference Contrast (DIC) Images.
+- BBBC030: Chinese Hamster Ovary (CHO) cells (DIC images).
 - BBBC032: 3D Mouse Embryo Blastocyst Cells.
 - BBBC033: 3D Mouse Trophoblast Stem Cells.
 - BBBC034: 3D Induced Pluripotent Human Stem Cells (hiPSC).
 - BBBC035: Simulated HL60 Cells from the Cell Tracking Challenge.
 - BBBC038: Kaggle 2018 Data Science Bowl - Nuclei Segmentation.
 - BBBC039: Nuclei of U2OS Cells in a Chemical Screen.
+- BBBC044: Mouse hippocampal presynaptic terminals (vGlut-1 and vGat).
 - BBBC046: FiloData3D - Synthetic 3D Time-Lapse Imaging of A549 Cells with Filopodia.
 - BBBC050: Nuclei of Mouse Embryonic Cells.
 ```
@@ -139,20 +148,31 @@ for images, labels in dataloader:
     print(f"Batch shape: {images.shape}, Labels: {labels.shape if labels is not None else 'None'}")
 ```
 
-The filter_datasets function allows you to filter a list of dataset classes based on whether they are 2D, 3D, or both.
+The filter_datasets function allows you to filter the dataset classes based on whether they are 2D, 3D, or both (no downloads are triggered).
 
 ```python
-from bbbc_datasets.utils.general import filter_datasets
-from tests import DATASETS
+from bbbc_datasets.dataset_manager import DatasetManager
 
 # Filter all datasets
-datasets_all = filter_datasets(DATASETS)
+datasets_all = DatasetManager.filter_datasets()
 
 # Filter only 2D datasets
-datasets_2d = filter_datasets(DATASETS, filter_3d=False)
+datasets_2d = DatasetManager.filter_datasets(filter_3d=False)
 
 # Filter only 3D datasets
-datasets_3d = filter_datasets(DATASETS, filter_3d=True)
+datasets_3d = DatasetManager.filter_datasets(filter_3d=True)
+```
+
+### **Dataset-Specific Options**
+
+Some datasets ship in several variants and can be loaded selectively:
+
+```python
+# Only one of the eight wound-healing subsets of BBBC019
+dataset = BBBC019(subset="MDCK")
+
+# Only the vGat marker of the 3D BBBC044 stacks
+dataset = BBBC044(marker="vgat")
 ```
 
 ---
@@ -165,7 +185,7 @@ datasets_3d = filter_datasets(DATASETS, filter_3d=True)
 **Checks if all dataset URLs are reachable** 🌍
 
 ```bash
-python -m unittest tests/test_dataset_urls.py
+python -m unittest tests/test_urls.py
 ```
 
 </details>
@@ -185,8 +205,18 @@ python -m unittest tests/test_dataset_loading.py
 
 ## 📝 Up-next
 
-- **Thinking of what is up next**
-- **Maybe integrating other datasets as cellpose, livecell, etc.**
+- **Complete the non-BBBC stubs:** `cellpose` and `livecell` are partial, `sartorius` needs its class body fixed, and `evican`/`isbi15` are empty placeholders.
+- **Cell Painting profiling sets** (BBBC025/036/047): multi-channel image-profiling data, a different paradigm from the current segmentation focus.
+- **Biological-label sets** (BBBC041/042/045): only bounding boxes / biological labels, no segmentation masks yet.
+
+---
+
+## 🆕 v1.0.0 highlights
+
+- **9 new BBBC datasets:** BBBC001, BBBC002, BBBC007, BBBC009, BBBC018, BBBC019, BBBC020, BBBC030, BBBC044 (now 27 total).
+- **Robust downloading:** per-file markers so multi-archive datasets (e.g. the 8 BBBC019 subsets) no longer skip files; metadata files are downloaded into a `metadata/` folder.
+- **Correct image/label discovery:** deep recursive listing, `__MACOSX` junk filtering, and exact stem matching before fuzzy matching (fixes BBBC039 label mismatches).
+- **Working PyTorch wrapper:** `DatasetManager.get_dataset` / `DataLoader` now return correct per-sample `(image, label)` tensors for 2D, 3D, RGB and ArrayScan `.DIB` inputs.
 
 ---
 
