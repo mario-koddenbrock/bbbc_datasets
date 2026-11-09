@@ -21,6 +21,7 @@ setup(
         "diplib~=3.5.2",
         "pillow~=11.1.0",
         "pandas~=2.2.3",
+        "platformdirs>=3.0",
     ],
     classifiers=[
         "Programming Language :: Python :: 3",

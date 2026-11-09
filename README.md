@@ -49,8 +49,30 @@ pip install -r requirements.txt
 - `torch`, `torchvision` (Deep Learning Framework)
 - `numpy`, `tifffile`, `opencv-python` (Image Handling)
 - `requests`, `matplotlib` (Downloading & Visualization)
+- `platformdirs` (Platform-specific cache location)
 
 </details>
+
+## 📦 Where datasets are stored
+
+Dataset files are cached in the platform cache directory, one subfolder per
+dataset (`images/`, `labels/`, `metadata/`):
+
+| OS | Default location |
+| --- | --- |
+| Linux | `~/.cache/bbbc_datasets` |
+| macOS | `~/Library/Caches/bbbc_datasets` |
+| Windows | `%LOCALAPPDATA%\bbbc_datasets\Cache` |
+
+Relocate the cache (e.g. to a larger disk) with the `BBBC_DATASETS_HOME`
+environment variable:
+
+```bash
+export BBBC_DATASETS_HOME=/data/bbbc_datasets
+```
+
+Individual datasets can also be redirected per instance with
+`download_dir=...`.
 
 ---
 

@@ -5,10 +5,35 @@ import zipfile
 import numpy as np
 import pandas as pd
 import requests
+from platformdirs import user_cache_dir
 from tqdm import tqdm
 
 from bbbc_datasets.metadata import DatasetMetadata
 from bbbc_datasets.utils.file_io import load_image
+
+# Cache location used by releases prior to the platformdirs-based default.
+_LEGACY_CACHE_PATH = os.path.expanduser("~/.bbbc_datasets")
+
+
+def _default_cache_path() -> str:
+    """
+    Resolves the default download location for dataset files.
+
+    Priority order:
+    1. ``BBBC_DATASETS_HOME`` environment variable (explicit user choice).
+    2. The legacy ``~/.bbbc_datasets`` location, if it already contains
+       downloads, so existing caches are reused after an upgrade.
+    3. The platform-specific cache directory (e.g. ``~/.cache/bbbc_datasets``
+       on Linux, ``~/Library/Caches/bbbc_datasets`` on macOS,
+       ``%LOCALAPPDATA%\\bbbc_datasets\\Cache`` on Windows).
+    """
+    env = os.environ.get("BBBC_DATASETS_HOME")
+    if env:
+        return env
+    cache = user_cache_dir("bbbc_datasets")
+    if not os.path.isdir(cache) and os.path.isdir(_LEGACY_CACHE_PATH):
+        return _LEGACY_CACHE_PATH
+    return cache
 
 
 class BaseBBBCDataset:
@@ -16,13 +41,12 @@ class BaseBBBCDataset:
     Base class for BBBC datasets, handling downloading, extraction, and file management.
 
     - Automatically downloads dataset files if they are not available locally.
-    - Stores datasets under ``~/.bbbc_datasets/<KEY>/`` (override with ``download_dir``).
+    - Stores datasets under the default cache path (see
+      ``_default_cache_path``; override with ``download_dir``).
     - Supports structured access to images, labels, and metadata.
     """
 
-    # Define a shared system-wide storage location
     KEY: str = ""
-    DEFAULT_PATH: str = os.path.expanduser("~/.bbbc_datasets/")
     IMAGE_SUBDIR: str = "images"
     LABEL_SUBDIR: str = "labels"
     METADATA_SUBDIR: str = "metadata"
@@ -62,7 +86,7 @@ class BaseBBBCDataset:
         self.ground_truth = None
 
         if not download_dir:
-            self.download_dir = self.DEFAULT_PATH
+            self.download_dir = _default_cache_path()
         else:
             self.download_dir = download_dir
 
